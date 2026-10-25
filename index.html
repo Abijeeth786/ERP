@@ -1,0 +1,3418 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CAMPUS ERP - Autonomous Technical Institution & Academic Intelligence System</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            brand: {
+              dark: '#020617',
+              card: 'rgba(11, 19, 43, 0.78)',
+              accent: '#38bdf8',
+              violet: '#8b5cf6',
+              emerald: '#10b981',
+              neonPink: '#f43f5e',
+              amber: '#f59e0b',
+              navy: '#0f172a'
+            }
+          },
+          animation: {
+            'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+            'border-flow': 'borderFlow 3s linear infinite',
+            'float': 'float 4s ease-in-out infinite',
+            'radar-spin': 'radarSpin 4s linear infinite',
+            'laser-sweep': 'laserSweep 1.5s ease-in-out infinite alternate',
+            'holo-wave': 'holoWave 4s ease infinite',
+            'grid-scroll': 'gridScroll 20s linear infinite'
+          },
+          keyframes: {
+            glowPulse: {
+              '0%, 100%': { opacity: '0.35', transform: 'scale(1)' },
+              '50%': { opacity: '0.85', transform: 'scale(1.08)' }
+            },
+            borderFlow: {
+              '0%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' },
+              '100%': { backgroundPosition: '0% 50%' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            radarSpin: {
+              '0%': { transform: 'rotate(0deg)' },
+              '100%': { transform: 'rotate(360deg)' }
+            },
+            laserSweep: {
+              '0%': { top: '0%' },
+              '100%': { top: '96%' }
+            },
+            holoWave: {
+              '0%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' },
+              '100%': { backgroundPosition: '0% 50%' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons & Chart.js CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    #neural-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .cyber-scanlines::before {
+      content: " ";
+      display: block;
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.04));
+      z-index: 2;
+      background-size: 100% 3px, 6px 100%;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .overdrive-mode {
+      filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.45)) contrast(1.1);
+      animation: screenPulse 4s infinite alternate;
+    }
+    @keyframes screenPulse {
+      0% { box-shadow: inset 0 0 40px rgba(56, 189, 248, 0.1); }
+      100% { box-shadow: inset 0 0 80px rgba(139, 92, 246, 0.25); }
+    }
+
+    .glass-card {
+      background: rgba(10, 18, 40, 0.82);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65), inset 0 1px 1px 0 rgba(255, 255, 255, 0.12);
+      transition: transform 0.15s ease-out, box-shadow 0.25s ease, border-color 0.25s ease;
+      transform-style: preserve-3d;
+    }
+
+    .light .glass-card {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(203, 213, 225, 0.85);
+      box-shadow: 0 12px 32px -10px rgba(100, 116, 139, 0.22), inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .gradient-border-box {
+      position: relative;
+      background: linear-gradient(60deg, #38bdf8, #818cf8, #f43f5e, #10b981, #38bdf8);
+      background-size: 300% 300%;
+      animation: borderFlow 3.5s linear infinite;
+      padding: 1.8px;
+      border-radius: 1.35rem;
+    }
+
+    .tilt-shine {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.22) 0%, transparent 65%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .holographic-badge {
+      background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(56,189,248,0.25) 25%, rgba(168,85,247,0.25) 50%, rgba(16,185,129,0.25) 75%, rgba(255,255,255,0.12) 100%);
+      background-size: 250% 250%;
+      animation: holoWave 4s ease infinite;
+    }
+
+    #cursor-glow {
+      position: fixed;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(139, 92, 246, 0.1) 45%, transparent 70%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      transition: transform 0.04s ease-out;
+    }
+
+    .eq-bar {
+      animation: eqBounce 1.2s ease-in-out infinite alternate;
+    }
+    @keyframes eqBounce {
+      0% { height: 3px; }
+      100% { height: 16px; }
+    }
+
+    .click-spark {
+      position: fixed;
+      pointer-events: none;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      z-index: 999;
+      animation: sparkFly 0.6s cubic-bezier(0, .9, .57, 1) forwards;
+    }
+    @keyframes sparkFly {
+      0% { opacity: 1; transform: translate(0, 0) scale(1); }
+      100% { opacity: 0; transform: var(--travel) scale(0); }
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.35);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.85); }
+
+    @media print {
+      body * { visibility: hidden; }
+      #printable-area, #printable-area * { visibility: visible; }
+      #printable-area { position: absolute; left: 0; top: 0; width: 100%; color: #000; background: #fff !important; }
+    }
+  </style>
+</head>
+
+<body class="bg-[#020617] text-slate-100 min-h-screen relative selection:bg-cyan-500 selection:text-black">
+
+  <!-- Interactive Dynamic Neural Canvas -->
+  <canvas id="neural-canvas"></canvas>
+
+  <!-- Ambient Cursor Spotlight -->
+  <div id="cursor-glow" class="hidden md:block"></div>
+
+  <!-- Background Animated Mesh Light Orbs -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute -top-40 -left-40 w-[38rem] h-[38rem] rounded-full bg-cyan-500/15 blur-[160px] animate-glow-pulse"></div>
+    <div class="absolute top-1/2 -right-40 w-[42rem] h-[42rem] rounded-full bg-violet-600/18 blur-[180px] animate-pulse"></div>
+    <div class="absolute -bottom-40 left-1/3 w-[36rem] h-[36rem] rounded-full bg-emerald-500/12 blur-[150px]"></div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2.5 pointer-events-none font-mono"></div>
+
+  <!-- ================= NOTIFICATIONS SLIDE-OVER DRAWER ================= -->
+  <div id="notification-drawer" class="fixed inset-y-0 right-0 w-80 sm:w-96 glass-card border-l border-cyan-500/40 z-50 translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+    <div class="p-4 border-b border-cyan-500/20 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="bell" class="w-4 h-4 text-cyan-400"></i>
+        <h3 class="text-sm font-bold text-white tracking-wide">Campus Administrative Broadcasts</h3>
+      </div>
+      <button onclick="toggleNotifications()" class="p-1 rounded-lg text-slate-400 hover:text-white transition">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-4 space-y-3">
+      <div class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs hover:border-cyan-400/50 transition">
+        <div class="flex justify-between items-start font-semibold text-cyan-300 mb-1">
+          <span>Fee Arrears Notice Dispatched</span>
+          <span class="text-[10px] text-slate-400 font-mono">10m ago</span>
+        </div>
+        <p class="text-slate-300 text-[11px]">Notice auto-sent to Mechanical Dept scholar Bharanidharan (₹35,000 pending). Parent alert SMS routed.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs hover:border-purple-400/50 transition">
+        <div class="flex justify-between items-start font-semibold text-purple-300 mb-1">
+          <span>Biometric RFID Gates Online</span>
+          <span class="text-[10px] text-slate-400 font-mono">24m ago</span>
+        </div>
+        <p class="text-slate-300 text-[11px]">Morning batch biometric turnstile synced 1,420 check-ins with 0 dropouts under high-speed authentication protocol.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs hover:border-emerald-400/50 transition">
+        <div class="flex justify-between items-start font-semibold text-emerald-300 mb-1">
+          <span>Fee Cleared: Santhosh Kumar</span>
+          <span class="text-[10px] text-slate-400 font-mono">45m ago</span>
+        </div>
+        <p class="text-slate-300 text-[11px]">100% Tuition & Lab retainer verified for Santhosh Kumar (Receipt: TXN-99812). Hall ticket unblocked.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs hover:border-amber-400/50 transition">
+        <div class="flex justify-between items-start font-semibold text-amber-300 mb-1">
+          <span>Zoho Corp Drive Shortlist</span>
+          <span class="text-[10px] text-slate-400 font-mono">1h ago</span>
+        </div>
+        <p class="text-slate-300 text-[11px]">Placement cell confirmed Day-1 offer for Santhosh Kumar (₹12 LPA) & Aswin (Texas Instruments shortlisted).</p>
+      </div>
+      <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs hover:border-rose-400/50 transition">
+        <div class="flex justify-between items-start font-semibold text-rose-300 mb-1">
+          <span>Arrear Flag: Bharathraj</span>
+          <span class="text-[10px] text-slate-400 font-mono">2h ago</span>
+        </div>
+        <p class="text-slate-300 text-[11px]">Standing arrear detected in Data Structures (CS-302) with 68% attendance. Hall Ticket withholding active.</p>
+      </div>
+    </div>
+    <div class="p-3 border-t border-cyan-500/20 text-center bg-slate-950/70">
+      <button onclick="triggerToast('All notifications acknowledged and cleared', 'info'); toggleNotifications(); playSciFiTone(700, 'sine', 0.1);" class="text-xs text-cyan-400 font-semibold hover:underline">
+        Mark all as read
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= AI CO-PILOT ASSISTANT DRAWER ================= -->
+  <div id="ai-copilot-drawer" class="fixed bottom-6 right-6 z-40">
+    <button onclick="toggleAICopilot()" class="group flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 text-white font-bold text-xs shadow-xl shadow-cyan-500/30 hover:scale-105 active:scale-95 transition border border-cyan-300/40">
+      <div class="relative flex h-3 w-3">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-300 opacity-80"></span>
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-200"></span>
+      </div>
+      <i data-lucide="sparkles" class="w-4 h-4 text-cyan-200 group-hover:rotate-12 transition"></i>
+      <span class="tracking-wide" id="copilot-button-label">AI Neural Co-Pilot</span>
+    </button>
+  </div>
+
+  <div id="ai-copilot-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-lg rounded-3xl p-6 border border-cyan-500/50 shadow-2xl relative">
+      <button onclick="toggleAICopilot()" class="absolute top-5 right-5 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="p-3 rounded-2xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/40">
+          <i data-lucide="cpu" class="w-7 h-7"></i>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span id="ai-copilot-title">Academic Neural Co-Pilot</span>
+            <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono">v5.8 AUTONOMOUS</span>
+          </h3>
+          <p class="text-xs text-slate-400 font-mono" id="ai-copilot-subtitle">Academic Predictive Intelligence Engine</p>
+        </div>
+      </div>
+      <div class="space-y-3 text-xs mb-5 font-mono" id="ai-copilot-insights">
+        <!-- Rendered dynamically per role -->
+      </div>
+      <button onclick="executeAIAdvisory()" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 text-white font-bold text-xs shadow-lg shadow-cyan-500/30 hover:brightness-110 active:scale-95 transition flex items-center justify-center gap-2">
+        <i data-lucide="send" class="w-3.5 h-3.5"></i>
+        <span id="ai-advisory-btn-text">Execute System Action Order</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= COMMAND PALETTE (CTRL+K) ================= -->
+  <div id="cmd-palette" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-start justify-center pt-20 px-4" onclick="handlePaletteBackdrop(event)">
+    <div class="glass-card w-full max-w-xl rounded-2xl border border-cyan-500/50 overflow-hidden shadow-2xl">
+      <div class="flex items-center px-4 border-b border-blue-500/20 bg-slate-900/80">
+        <i data-lucide="terminal" class="w-4 h-4 text-cyan-400 mr-2.5"></i>
+        <input 
+          id="cmd-input" 
+          type="text" 
+          placeholder="Type command: 'students', 'fees', 'placements', 'library', 'research', 'exams'..." 
+          class="w-full bg-transparent py-3.5 text-xs text-white focus:outline-none placeholder:text-slate-500 font-mono"
+        />
+        <kbd class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">ESC</kbd>
+      </div>
+      <div id="cmd-results" class="max-h-80 overflow-y-auto p-2 text-xs divide-y divide-slate-800/40 space-y-1">
+        <button onclick="executeCommand('students')" class="w-full text-left flex items-center justify-between p-2.5 rounded-xl hover:bg-cyan-500/20 text-slate-200 transition">
+          <span class="flex items-center gap-2.5"><i data-lucide="users" class="w-4 h-4 text-cyan-400"></i> Open Students Master Roster</span>
+          <span class="text-[10px] text-slate-500 font-mono">REGISTRY</span>
+        </button>
+        <button onclick="executeCommand('fees')" class="w-full text-left flex items-center justify-between p-2.5 rounded-xl hover:bg-cyan-500/20 text-slate-200 transition">
+          <span class="flex items-center gap-2.5"><i data-lucide="wallet" class="w-4 h-4 text-emerald-400"></i> Fee Collection Ledger & Receipts</span>
+          <span class="text-[10px] text-slate-500 font-mono">ACCOUNTS</span>
+        </button>
+        <button onclick="executeCommand('placements')" class="w-full text-left flex items-center justify-between p-2.5 rounded-xl hover:bg-cyan-500/20 text-slate-200 transition">
+          <span class="flex items-center gap-2.5"><i data-lucide="briefcase" class="w-4 h-4 text-amber-400"></i> Placements & Career Drives</span>
+          <span class="text-[10px] text-slate-500 font-mono">CAREERS</span>
+        </button>
+        <button onclick="executeCommand('library')" class="w-full text-left flex items-center justify-between p-2.5 rounded-xl hover:bg-cyan-500/20 text-slate-200 transition">
+          <span class="flex items-center gap-2.5"><i data-lucide="book-open" class="w-4 h-4 text-indigo-400"></i> Library OPAC & Digital E-Vault</span>
+          <span class="text-[10px] text-slate-500 font-mono">KNOWLEDGE</span>
+        </button>
+        <button onclick="executeCommand('research')" class="w-full text-left flex items-center justify-between p-2.5 rounded-xl hover:bg-cyan-500/20 text-slate-200 transition">
+          <span class="flex items-center gap-2.5"><i data-lucide="flask-conical" class="w-4 h-4 text-purple-400"></i> Research, Grants & Innovation Cell</span>
+          <span class="text-[10px] text-slate-500 font-mono">R&D</span>
+        </button>
+        <button onclick="executeCommand('circulars')" class="w-full text-left flex items-center justify-between p-2.5 rounded-xl hover:bg-cyan-500/20 text-slate-200 transition">
+          <span class="flex items-center gap-2.5"><i data-lucide="scroll" class="w-4 h-4 text-rose-400"></i> Autonomous Academic Circulars</span>
+          <span class="text-[10px] text-slate-500 font-mono">COUNCIL</span>
+        </button>
+        <button onclick="executeCommand('attendance')" class="w-full text-left flex items-center justify-between p-2.5 rounded-xl hover:bg-cyan-500/20 text-slate-200 transition">
+          <span class="flex items-center gap-2.5"><i data-lucide="radio" class="w-4 h-4 text-cyan-400"></i> Live Biometric RFID Scanner</span>
+          <span class="text-[10px] text-slate-500 font-mono">GATEWAY</span>
+        </button>
+        <button onclick="executeCommand('exams')" class="w-full text-left flex items-center justify-between p-2.5 rounded-xl hover:bg-cyan-500/20 text-slate-200 transition">
+          <span class="flex items-center gap-2.5"><i data-lucide="award" class="w-4 h-4 text-blue-400"></i> CIA Assessments & Hall Ticket Generator</span>
+          <span class="text-[10px] text-slate-500 font-mono">EXAMS</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 1. FUTURISTIC LOGIN SCREEN ================= -->
+  <div id="login-section" class="fixed inset-0 z-40 flex items-center justify-center p-4 bg-[#020617] transition-opacity duration-500">
+    <div class="gradient-border-box w-full max-w-md shadow-2xl relative z-10">
+      <div class="glass-card rounded-[1.25rem] p-8 border-0 bg-slate-950/90" data-tilt>
+        <div class="tilt-shine"></div>
+        <div class="text-center mb-6">
+          <div class="relative w-20 h-20 mx-auto mb-3 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full border border-cyan-400/40 border-dashed animate-radar-spin"></div>
+            <div class="absolute inset-1 rounded-full border border-violet-500/40 animate-pulse"></div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-600 to-violet-600 flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-cyan-500/50 animate-float" id="login-badge-avatar">
+              ⚡
+            </div>
+          </div>
+          <h2 id="login-title-scramble" class="text-2xl font-black tracking-tight bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+            CAMPUS ERP
+          </h2>
+          <p class="text-xs text-slate-400 mt-1 font-mono tracking-widest uppercase" id="login-subtitle">
+            Autonomous Technical Institution Gateway
+          </p>
+        </div>
+
+        <!-- Role Selector -->
+        <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-slate-900/90 border border-blue-900/40 mb-5 text-xs font-semibold">
+          <button type="button" onclick="selectLoginRole('admin')" id="role-admin" class="py-2 rounded-lg bg-blue-600 text-white transition shadow flex items-center justify-center gap-1">
+            <i data-lucide="shield" class="w-3.5 h-3.5"></i> Admin
+          </button>
+          <button type="button" onclick="selectLoginRole('faculty')" id="role-faculty" class="py-2 rounded-lg text-slate-400 hover:text-white transition flex items-center justify-center gap-1">
+            <i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i> Faculty
+          </button>
+          <button type="button" onclick="selectLoginRole('student')" id="role-student" class="py-2 rounded-lg text-slate-400 hover:text-white transition flex items-center justify-center gap-1">
+            <i data-lucide="user" class="w-3.5 h-3.5"></i> Student
+          </button>
+        </div>
+
+        <!-- Login Form -->
+        <form onsubmit="handleLogin(event)" class="space-y-4 text-xs">
+          <div>
+            <label class="block text-slate-300 mb-1 font-medium font-mono text-[11px]" id="login-email-label">Autonomous ID / Email</label>
+            <div class="relative">
+              <i data-lucide="mail" class="w-4 h-4 text-cyan-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input type="email" id="login-email" value="dean.muthuvel@college.edu" required class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-900/80 border border-blue-900/40 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 font-mono transition" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 mb-1 font-medium font-mono text-[11px]">Security Password / Biometric Pin</label>
+            <div class="relative">
+              <i data-lucide="lock" class="w-4 h-4 text-cyan-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input type="password" id="login-pass" value="••••••••••••" required class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-900/80 border border-blue-900/40 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 font-mono transition" />
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white font-bold shadow-lg shadow-cyan-500/35 hover:brightness-110 active:scale-[0.98] transition">
+            Authorize & Launch ERP Workspace →
+          </button>
+
+          <button type="button" onclick="quickDemoLogin()" id="quick-demo-btn" class="w-full py-2.5 rounded-xl glass-card hover:bg-slate-800/80 text-cyan-300 font-semibold border border-cyan-500/30 transition flex items-center justify-center gap-2">
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-cyan-400"></i> <span id="quick-login-label">⚡ One-Click Access (Dean Dr. Muthuvel Pandian)</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 2. MAIN ERP WORKSPACE ================= -->
+  <div id="erp-workspace" class="hidden flex flex-col h-screen overflow-hidden relative z-10">
+
+    <!-- TOP TELEMETRY HUD BAR -->
+    <div class="h-8 bg-slate-950 border-b border-blue-900/40 px-4 flex items-center justify-between text-[10px] font-mono text-slate-400 shrink-0 z-30">
+      <div class="flex items-center gap-4">
+        <span class="flex items-center gap-1.5 text-emerald-400">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span id="gateway-telemetry-label">SYNDICATE GATEWAY: QUANTUM ACCREDITED</span>
+        </span>
+        <span class="hidden sm:inline text-slate-600">|</span>
+        <span class="hidden sm:flex items-center gap-1.5 text-cyan-300">
+          <i data-lucide="activity" class="w-3.5 h-3.5 text-cyan-400"></i> LATENCY: <span id="ping-latency">12</span>ms
+        </span>
+        <span class="hidden md:inline text-slate-600">|</span>
+        <div class="hidden md:flex items-center gap-1" title="Academic Telemetry">
+          <span class="w-1 bg-cyan-400 rounded-full eq-bar" style="animation-delay: 0.1s"></span>
+          <span class="w-1 bg-indigo-400 rounded-full eq-bar" style="animation-delay: 0.3s"></span>
+          <span class="w-1 bg-violet-400 rounded-full eq-bar" style="animation-delay: 0.2s"></span>
+          <span class="w-1 bg-emerald-400 rounded-full eq-bar" style="animation-delay: 0.4s"></span>
+          <span class="text-slate-400 text-[9px] ml-1" id="top-role-subline">CAMPUS TELEMETRY STREAM ONLINE</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleOverdrive()" id="overdrive-btn" class="px-2 py-0.5 rounded border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/20 transition flex items-center gap-1">
+          <i data-lucide="flame" class="w-3 h-3 text-amber-400"></i>
+          <span>OVERDRIVE: <strong id="overdrive-status">OFF</strong></span>
+        </button>
+        <button onclick="toggleCyberScanlines()" class="hover:text-cyan-300 text-slate-400 transition" title="Toggle CRT Scanline Overlay">
+          [CRT: <span id="crt-status">OFF</span>]
+        </button>
+        <span class="text-emerald-400 font-bold hidden sm:inline">● NAAC A++ (3.78/4.0)</span>
+      </div>
+    </div>
+
+    <!-- MAIN BODY SPLIT (SIDEBAR + MAIN) -->
+    <div class="flex-1 flex overflow-hidden">
+
+      <!-- ================= SIDEBAR ================= -->
+      <aside id="sidebar" class="w-64 glass-card border-r border-slate-800/80 dark:border-blue-900/30 flex flex-col transition-all duration-300 z-30 shrink-0">
+        <!-- Logo Branding -->
+        <div class="h-16 flex items-center justify-between px-5 border-b border-slate-700/20 dark:border-blue-900/30">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-violet-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-cyan-500/40" id="sidebar-icon">
+              ⚡
+            </div>
+            <div class="sidebar-text">
+              <h1 class="text-sm font-black tracking-tight bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                CAMPUS ERP
+              </h1>
+              <p class="text-[10px] text-slate-400 font-mono" id="sidebar-role-label">Academic Portal</p>
+            </div>
+          </div>
+          <button id="toggle-sidebar" class="p-1.5 rounded-lg hover:bg-slate-800/60 text-slate-400 transition" title="Toggle Sidebar">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 overflow-y-auto p-3 space-y-1" id="nav-container">
+          <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition group bg-blue-600/20 text-cyan-300 border border-blue-500/30" data-tab="dashboard">
+            <i data-lucide="layout-dashboard" class="w-4 h-4 text-cyan-400"></i>
+            <span class="sidebar-text" id="nav-dash-label">Campus Analytics</span>
+          </button>
+
+          <button onclick="switchTab('students')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition group" data-tab="students">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            <span class="sidebar-text flex-1 text-left" id="nav-students-label">Students Roster</span>
+            <span id="nav-students-count" class="sidebar-text text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-cyan-400 border border-blue-500/20 font-mono">5</span>
+          </button>
+
+          <button onclick="switchTab('fees')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition group" data-tab="fees">
+            <i data-lucide="wallet" class="w-4 h-4"></i>
+            <span class="sidebar-text flex-1 text-left" id="nav-fees-label">Fee Ledger & Accounts</span>
+            <span id="nav-fees-alert" class="sidebar-text text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono">2 Due</span>
+          </button>
+
+          <button onclick="switchTab('placements')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition group" data-tab="placements">
+            <i data-lucide="briefcase" class="w-4 h-4"></i>
+            <span class="sidebar-text flex-1 text-left">Placement & Careers</span>
+            <span class="sidebar-text text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono">92.4%</span>
+          </button>
+
+          <button onclick="switchTab('library')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition group" data-tab="library">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+            <span class="sidebar-text">Digital Library & OPAC</span>
+          </button>
+
+          <button onclick="switchTab('faculty')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition group" data-tab="faculty">
+            <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+            <span class="sidebar-text">Faculty Members</span>
+          </button>
+
+          <button onclick="switchTab('attendance')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition group" data-tab="attendance">
+            <i data-lucide="radio" class="w-4 h-4"></i>
+            <span class="sidebar-text">Live Biometric Gates</span>
+          </button>
+
+          <button onclick="switchTab('research')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition group" data-tab="research">
+            <i data-lucide="flask-conical" class="w-4 h-4"></i>
+            <span class="sidebar-text">Research & Innovation</span>
+          </button>
+
+          <button onclick="switchTab('circulars')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition group" data-tab="circulars">
+            <i data-lucide="scroll" class="w-4 h-4"></i>
+            <span class="sidebar-text">Syndicate Circulars</span>
+          </button>
+
+          <button onclick="switchTab('hostel')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition group" data-tab="hostel">
+            <i data-lucide="home" class="w-4 h-4"></i>
+            <span class="sidebar-text">Hostel & Transport Fleet</span>
+          </button>
+
+          <button onclick="switchTab('timetable')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition group" data-tab="timetable">
+            <i data-lucide="calendar" class="w-4 h-4"></i>
+            <span class="sidebar-text">Timetable Matrix</span>
+          </button>
+
+          <button onclick="switchTab('exams')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition group" data-tab="exams">
+            <i data-lucide="award" class="w-4 h-4"></i>
+            <span class="sidebar-text">Assessments & Hall Tickets</span>
+          </button>
+        </nav>
+
+        <!-- Sidebar User Footer: Dynamic Role Profile -->
+        <div class="p-3 border-t border-slate-700/20 dark:border-blue-900/30">
+          <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900/60 border border-blue-900/30">
+            <div class="flex items-center gap-2.5 truncate">
+              <div id="user-avatar-badge" class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center font-bold text-white text-xs shadow-md shadow-cyan-500/30 shrink-0">
+                MP
+              </div>
+              <div class="sidebar-text truncate">
+                <p id="user-display-name" class="text-xs font-bold leading-tight">Dr. Muthuvel Pandian</p>
+                <p id="user-display-role" class="text-[10px] text-slate-400 font-mono">Dean of Academics & Affairs</p>
+              </div>
+            </div>
+            <button onclick="handleLogout()" class="p-1.5 rounded-lg hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition" title="Sign Out">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ================= MAIN VIEWPORT ================= -->
+      <div class="flex-1 flex flex-col h-full overflow-hidden">
+
+        <!-- TOP NAVBAR -->
+        <header class="h-16 glass-card border-b border-slate-700/20 dark:border-blue-900/30 px-6 flex items-center justify-between gap-4 shrink-0 z-20">
+          <div class="relative w-80 max-w-full">
+            <i data-lucide="search" class="w-4 h-4 text-cyan-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input 
+              type="text" 
+              placeholder="Search scholars, roll no, fees, depts... (Press ⌘K)" 
+              oninput="handleGlobalSearch(this.value)"
+              class="w-full pl-9 pr-4 py-1.5 rounded-xl bg-slate-900/70 border border-blue-900/40 text-xs text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition placeholder:text-slate-500 font-mono"
+            />
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <button onclick="toggleVoiceAI()" id="voice-ai-btn" class="p-2 rounded-xl glass-card hover:bg-slate-800/60 text-cyan-400 transition" title="Toggle AI Voice Announcer">
+              <i data-lucide="mic" id="voice-icon" class="w-4 h-4 text-cyan-400"></i>
+            </button>
+
+            <button onclick="toggleCommandPalette()" class="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl glass-card hover:bg-slate-800/60 text-slate-300 text-xs transition" title="Command Palette">
+              <i data-lucide="terminal" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <kbd class="text-[10px] font-mono text-slate-400">⌘K</kbd>
+            </button>
+
+            <button onclick="toggleSoundFX()" id="sound-btn" class="p-2 rounded-xl glass-card hover:bg-slate-800/60 text-cyan-400 transition" title="Audio Feedback Toggle">
+              <i data-lucide="volume-2" id="sound-icon" class="w-4 h-4"></i>
+            </button>
+
+            <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/60 border border-blue-900/30 text-xs font-mono text-cyan-300">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              <span id="digital-clock">00:00:00 AM</span>
+            </div>
+
+            <button onclick="toggleTheme()" class="p-2 rounded-xl glass-card hover:bg-slate-800/60 text-slate-300 transition" title="Toggle Theme">
+              <i data-lucide="sun" id="theme-icon" class="w-4 h-4 text-amber-400"></i>
+            </button>
+
+            <button onclick="toggleNotifications()" class="p-2 rounded-xl glass-card hover:bg-slate-800/60 text-slate-300 transition relative">
+              <i data-lucide="bell" class="w-4 h-4"></i>
+              <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+              <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-cyan-500"></span>
+            </button>
+
+            <button id="top-enroll-btn" onclick="openModal('add-student-modal')" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:brightness-110 text-white shadow-lg shadow-cyan-500/25 transition active:scale-95">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span class="hidden md:inline" id="top-action-text">Enroll Student</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- SCROLLABLE PAGE TABS -->
+        <main class="flex-1 overflow-y-auto p-6 space-y-6">
+
+          <!-- ================= TAB 1: DASHBOARD ================= -->
+          <div id="tab-dashboard" class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 id="dash-heading-scramble" class="text-2xl font-black tracking-tight bg-gradient-to-r from-white via-cyan-100 to-cyan-400 bg-clip-text text-transparent">
+                  Autonomous Academic Intelligence Hub
+                </h2>
+                <p class="text-xs text-slate-400 mt-1 font-mono" id="dash-subheading">
+                  Academic Term 2026 • Real-Time Telemetry Matrix
+                </p>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="resetToDefaultData()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium glass-card hover:bg-slate-800 transition text-slate-400 hover:text-white" title="Reset Demo Data">
+                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset Data
+                </button>
+                <button onclick="exportStudentsToCSV()" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-cyan-600 to-blue-600 hover:brightness-110 text-white shadow-lg shadow-cyan-600/30 transition">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i> Export Detailed CSV
+                </button>
+              </div>
+            </div>
+
+            <!-- Dynamic Institutional Highlights Banner -->
+            <div class="glass-card rounded-2xl p-4 border border-cyan-500/30 bg-gradient-to-r from-blue-950/40 via-slate-900/60 to-purple-950/40 flex flex-wrap items-center justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 font-bold text-lg" id="banner-role-icon">
+                  🏛️
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-white" id="banner-portal-title">Central Campus Directorate of Academic Affairs</h4>
+                  <p class="text-xs text-slate-400" id="banner-portal-sub">Session: <span class="text-cyan-300 font-semibold" id="banner-actor-name">Dr. Muthuvel Pandian, Ph.D.</span></p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 font-mono text-[11px]">
+                <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">NIRF Tier-1 #18</span>
+                <span class="px-2.5 py-1 rounded-lg bg-blue-500/10 text-cyan-400 border border-blue-500/30">NBA Tier-1 Accredited</span>
+                <span class="px-2.5 py-1 rounded-lg bg-purple-500/10 text-purple-300 border border-purple-500/30">NAAC A++ (3.78)</span>
+              </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="glass-card rounded-2xl p-5" data-tilt>
+                <div class="tilt-shine"></div>
+                <div class="flex justify-between items-start mb-3">
+                  <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono" id="kpi-label-1">Scholars Registered</span>
+                  <div class="p-2.5 rounded-xl bg-blue-600/20 text-cyan-400 border border-blue-500/30">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                  </div>
+                </div>
+                <div class="text-3xl font-black tracking-tight text-white font-mono" id="stat-students-count">0</div>
+                <div class="flex items-center justify-between text-xs font-medium mt-2">
+                  <span class="text-emerald-400 flex items-center gap-1"><i data-lucide="database" class="w-3 h-3"></i> Synchronized</span>
+                  <span class="text-cyan-400 font-mono" id="kpi-sub-1">5 Master Cohorts</span>
+                </div>
+              </div>
+
+              <div class="glass-card rounded-2xl p-5" data-tilt>
+                <div class="tilt-shine"></div>
+                <div class="flex justify-between items-start mb-3">
+                  <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono" id="kpi-label-2">Total Term Dues</span>
+                  <div class="p-2.5 rounded-xl bg-purple-600/20 text-purple-400 border border-purple-500/30">
+                    <i data-lucide="wallet" class="w-5 h-5"></i>
+                  </div>
+                </div>
+                <div class="text-3xl font-black tracking-tight text-white font-mono" id="stat-total-fees">₹0</div>
+                <div class="flex items-center justify-between text-xs font-medium mt-2">
+                  <span class="text-emerald-400 font-mono" id="stat-fees-collected">Collected: ₹0</span>
+                  <span class="text-amber-400 font-mono" id="stat-fees-due">Pending: ₹0</span>
+                </div>
+              </div>
+
+              <div class="glass-card rounded-2xl p-5" data-tilt>
+                <div class="tilt-shine"></div>
+                <div class="flex justify-between items-start mb-3">
+                  <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono" id="kpi-label-3">Average Attendance</span>
+                  <div class="p-2.5 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30">
+                    <i data-lucide="radio" class="w-5 h-5"></i>
+                  </div>
+                </div>
+                <div class="text-3xl font-black tracking-tight text-white font-mono">
+                  <span id="stat-avg-attendance">85.0</span>%
+                </div>
+                <div class="flex items-center gap-1.5 text-xs font-medium text-emerald-400 mt-2">
+                  <i data-lucide="zap" class="w-3.5 h-3.5 text-cyan-400"></i> RFID Turnstiles Live
+                </div>
+              </div>
+
+              <div class="glass-card rounded-2xl p-5" data-tilt>
+                <div class="tilt-shine"></div>
+                <div class="flex justify-between items-start mb-3">
+                  <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono" id="kpi-label-4">Placement Conversions</span>
+                  <div class="p-2.5 rounded-xl bg-amber-600/20 text-amber-400 border border-amber-500/30">
+                    <i data-lucide="trophy" class="w-5 h-5"></i>
+                  </div>
+                </div>
+                <div class="text-3xl font-black tracking-tight text-white font-mono" id="kpi-val-4">
+                  92.4%
+                </div>
+                <div class="flex items-center gap-1.5 text-xs font-medium text-emerald-400 mt-2" id="kpi-sub-4">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Highest CTC: ₹44.5 LPA
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div class="lg:col-span-2 glass-card rounded-2xl p-6" data-tilt>
+                <div class="tilt-shine"></div>
+                <div class="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                      <span id="chart-main-title">Department Attendance & Curriculum Velocity</span>
+                      <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+                    </h3>
+                    <p class="text-xs text-slate-400" id="chart-main-sub">Cross-department metrics evaluated under autonomous syndicate framework</p>
+                  </div>
+                  <span class="text-xs text-cyan-400 px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 font-mono">Live Sync</span>
+                </div>
+                <div class="h-64 relative">
+                  <canvas id="performanceChart"></canvas>
+                </div>
+              </div>
+
+              <div class="glass-card rounded-2xl p-6 flex flex-col justify-between" data-tilt>
+                <div class="tilt-shine"></div>
+                <div>
+                  <h3 class="text-base font-bold text-white mb-2" id="chart-sub-title">Fee Realization Ratio</h3>
+                  <p class="text-xs text-slate-400 mb-4" id="chart-sub-desc">Settlement breakdown across Tuition, Laboratory and Hostel funds</p>
+                  <div class="h-44 relative">
+                    <canvas id="feesDistributionChart"></canvas>
+                  </div>
+                </div>
+                <div class="pt-4 border-t border-blue-500/20 flex justify-between text-xs text-slate-400 font-mono">
+                  <span>Paid: <strong class="text-emerald-400" id="dash-paid-count">0</strong></span>
+                  <span>Partial: <strong class="text-amber-400" id="dash-partial-count">0</strong></span>
+                  <span>Pending: <strong class="text-rose-400" id="dash-due-count">0</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= TAB 2: STUDENTS MASTER ROSTER ================= -->
+          <div id="tab-students" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-2xl font-black text-white" id="students-tab-title">Comprehensive Student Academic Records</h2>
+                <p class="text-xs text-slate-400">Official registry with fees, attendance, parent details, quota & arrear status</p>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="exportStudentsToCSV()" class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold glass-card hover:bg-slate-800 transition">
+                  <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-400"></i> Export Real CSV
+                </button>
+                <button id="add-student-btn-table" onclick="openModal('add-student-modal')" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 text-white shadow-lg shadow-cyan-500/25 hover:brightness-110 transition">
+                  <i data-lucide="user-plus" class="w-4 h-4"></i> Add New Student
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="glass-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5 flex-1 min-w-[260px]">
+                <i data-lucide="filter" class="w-4 h-4 text-cyan-400"></i>
+                <select id="dept-filter" onchange="filterStudents()" class="bg-slate-900/80 border border-blue-900/40 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-cyan-500 font-mono">
+                  <option value="All">All Departments</option>
+                  <option value="Computer Science">Computer Science</option>
+                  <option value="Artificial Intelligence">Artificial Intelligence</option>
+                  <option value="Electronics & Comm.">Electronics & Comm.</option>
+                  <option value="Mechanical Engg.">Mechanical Engg.</option>
+                </select>
+                <select id="fee-status-filter" onchange="filterStudents()" class="bg-slate-900/80 border border-blue-900/40 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-cyan-500 font-mono">
+                  <option value="All">All Fee Status</option>
+                  <option value="PAID">PAID</option>
+                  <option value="PARTIAL">PARTIAL</option>
+                  <option value="PENDING">PENDING</option>
+                </select>
+              </div>
+              <div class="text-xs text-slate-400 font-mono" id="students-count-badge">Showing 0 records</div>
+            </div>
+
+            <!-- Students Table -->
+            <div class="glass-card rounded-2xl overflow-hidden shadow-xl">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="border-b border-blue-900/40 text-slate-400 bg-slate-900/80 font-mono">
+                    <tr>
+                      <th class="py-3.5 px-4 font-semibold">Scholar Name & ID</th>
+                      <th class="py-3.5 px-4 font-semibold">Department & Year</th>
+                      <th class="py-3.5 px-4 font-semibold">Fees Status</th>
+                      <th class="py-3.5 px-4 font-semibold">Attendance</th>
+                      <th class="py-3.5 px-4 font-semibold">CGPA & Backlogs</th>
+                      <th class="py-3.5 px-4 font-semibold">Residence & Quota</th>
+                      <th class="py-3.5 px-4 font-semibold text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="students-table-body" class="divide-y divide-slate-800/40 font-sans"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= TAB 3: FEES & FINANCIALS ================= -->
+          <div id="tab-fees" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-2xl font-black text-white" id="fees-tab-heading">Institutional Tuition & Accounts Ledger</h2>
+                <p class="text-xs text-slate-400" id="fees-tab-sub">Complete per-student fee breakdown, payment transactions, and receipt issuing</p>
+              </div>
+              <div class="flex gap-2">
+                <button id="collect-fee-btn" onclick="openModal('quick-pay-modal')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/25 hover:brightness-110 active:scale-95 transition flex items-center gap-2">
+                  <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Collect / Settle Student Fee
+                </button>
+              </div>
+            </div>
+
+            <!-- Accounts Snapshot Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-400">
+                <span class="text-xs text-slate-400 font-mono uppercase">Total Gross Assessment</span>
+                <div class="text-2xl font-black text-white mt-1 font-mono" id="ledger-total-assessment">₹0</div>
+                <p class="text-[10px] text-slate-400 mt-1">Tuition + Lab + Hostel + Exam</p>
+              </div>
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-400">
+                <span class="text-xs text-slate-400 font-mono uppercase">Realized Revenue</span>
+                <div class="text-2xl font-black text-emerald-400 mt-1 font-mono" id="ledger-total-paid">₹0</div>
+                <p class="text-[10px] text-emerald-300 mt-1" id="ledger-collection-percent">0% Collected</p>
+              </div>
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-rose-400">
+                <span class="text-xs text-slate-400 font-mono uppercase">Outstanding Dues</span>
+                <div class="text-2xl font-black text-rose-400 mt-1 font-mono" id="ledger-total-due">₹0</div>
+                <p class="text-[10px] text-rose-300 mt-1">Follow-up Required</p>
+              </div>
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-purple-400">
+                <span class="text-xs text-slate-400 font-mono uppercase">Scholarships Disbursed</span>
+                <div class="text-2xl font-black text-purple-400 mt-1 font-mono">₹2,80,000</div>
+                <p class="text-[10px] text-purple-300 mt-1">First Graduate & Merit Funds</p>
+              </div>
+            </div>
+
+            <!-- Master Student Fee Roster Table -->
+            <div class="glass-card rounded-2xl overflow-hidden shadow-xl">
+              <div class="p-4 border-b border-blue-900/30 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                  <i data-lucide="receipt" class="w-4 h-4 text-cyan-400"></i> Individual Student Fee Status & Ledger Breakdown
+                </h3>
+                <span class="text-xs font-mono text-cyan-300" id="fee-auditor-label">Audited by Dr. Muthuvel Pandian</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs font-mono">
+                  <thead class="border-b border-blue-900/40 text-slate-400 bg-slate-900/70">
+                    <tr>
+                      <th class="py-3 px-4 font-semibold">Scholar</th>
+                      <th class="py-3 px-4 font-semibold">Total Assessed</th>
+                      <th class="py-3 px-4 font-semibold text-emerald-400">Paid Amount</th>
+                      <th class="py-3 px-4 font-semibold text-rose-400">Pending Due</th>
+                      <th class="py-3 px-4 font-semibold">Status</th>
+                      <th class="py-3 px-4 font-semibold">Last Txn Ref</th>
+                      <th class="py-3 px-4 font-semibold text-right">Receipt / Invoice</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fees-master-table-body" class="divide-y divide-slate-800/40"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Transaction Audit Trail -->
+            <div class="glass-card rounded-2xl p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                  <i data-lucide="history" class="w-4 h-4 text-emerald-400"></i> Verified Transaction Stream (Real-Time Gateway Logs)
+                </h3>
+                <span class="text-[11px] font-mono text-emerald-400 flex items-center gap-1">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> GATEWAY SECURED
+                </span>
+              </div>
+              <div id="ledger-entries" class="space-y-2.5 text-xs font-mono"></div>
+            </div>
+          </div>
+
+          <!-- ================= TAB: PLACEMENT & INDUSTRY CELL ================= -->
+          <div id="tab-placements" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-2xl font-black text-white">Placement & Corporate Relations Cell</h2>
+                <p class="text-xs text-slate-400">Campus placement drives, company tier listings, offer letters & student readiness metrics</p>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="triggerToast('Recruitment summary report exported to Placement Cell', 'success'); playSuccessChime();" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-semibold text-xs shadow-lg shadow-cyan-600/30 transition flex items-center gap-1.5">
+                  <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Export Placements Report
+                </button>
+              </div>
+            </div>
+
+            <!-- Placement Stat Widgets -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-400" data-tilt>
+                <div class="tilt-shine"></div>
+                <span class="text-xs text-slate-400 uppercase font-mono">Placement Percentage</span>
+                <div class="text-3xl font-black text-emerald-400 my-1 font-mono">92.4%</div>
+                <p class="text-[11px] text-slate-400">462/500 Scholars Placed</p>
+              </div>
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-400" data-tilt>
+                <div class="tilt-shine"></div>
+                <span class="text-xs text-slate-400 uppercase font-mono">Highest Package (CTC)</span>
+                <div class="text-3xl font-black text-cyan-400 my-1 font-mono">₹44.5 LPA</div>
+                <p class="text-[11px] text-slate-400">International Tech Hub Offer</p>
+              </div>
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-purple-400" data-tilt>
+                <div class="tilt-shine"></div>
+                <span class="text-xs text-slate-400 uppercase font-mono">Average Campus CTC</span>
+                <div class="text-3xl font-black text-purple-400 my-1 font-mono">₹9.82 LPA</div>
+                <p class="text-[11px] text-slate-400">+18% Growth vs 2025</p>
+              </div>
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-400" data-tilt>
+                <div class="tilt-shine"></div>
+                <span class="text-xs text-slate-400 uppercase font-mono">Visiting Recruiters</span>
+                <div class="text-3xl font-black text-amber-400 my-1 font-mono">148+</div>
+                <p class="text-[11px] text-slate-400">Tier-1, Fortune 500 & Unicorns</p>
+              </div>
+            </div>
+
+            <!-- Student Placement Status Roster -->
+            <div class="glass-card rounded-2xl p-6">
+              <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <i data-lucide="check-check" class="w-4 h-4 text-emerald-400"></i> Registered Student Cohort Placement Telemetry
+              </h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs font-mono">
+                  <thead class="border-b border-blue-900/40 text-slate-400 bg-slate-900/70">
+                    <tr>
+                      <th class="py-3 px-4 font-semibold">Scholar Name</th>
+                      <th class="py-3 px-4 font-semibold">Department</th>
+                      <th class="py-3 px-4 font-semibold">CGPA</th>
+                      <th class="py-3 px-4 font-semibold">Recruiting Organization</th>
+                      <th class="py-3 px-4 font-semibold text-emerald-400">Offered CTC</th>
+                      <th class="py-3 px-4 font-semibold">Drive Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-800/40">
+                    <tr class="hover:bg-slate-900/60 transition">
+                      <td class="py-3 px-4 font-bold text-white font-sans">Santhosh Kumar (STU-2026-001)</td>
+                      <td class="py-3 px-4 text-cyan-300">Computer Science</td>
+                      <td class="py-3 px-4 text-white">9.1 / 10</td>
+                      <td class="py-3 px-4 text-white font-bold">Zoho Corporation</td>
+                      <td class="py-3 px-4 text-emerald-400 font-bold">₹12.00 LPA</td>
+                      <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">OFFER ACCEPTED</span></td>
+                    </tr>
+                    <tr class="hover:bg-slate-900/60 transition">
+                      <td class="py-3 px-4 font-bold text-white font-sans">Aswin (STU-2026-002)</td>
+                      <td class="py-3 px-4 text-indigo-300">Electronics & Comm.</td>
+                      <td class="py-3 px-4 text-white">8.8 / 10</td>
+                      <td class="py-3 px-4 text-white font-bold">Texas Instruments</td>
+                      <td class="py-3 px-4 text-emerald-400 font-bold">₹18.50 LPA</td>
+                      <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold">INTERVIEW CLEARED</span></td>
+                    </tr>
+                    <tr class="hover:bg-slate-900/60 transition">
+                      <td class="py-3 px-4 font-bold text-white font-sans">Bharanidharan (STU-2026-003)</td>
+                      <td class="py-3 px-4 text-amber-300">Mechanical Engg.</td>
+                      <td class="py-3 px-4 text-white">7.4 / 10</td>
+                      <td class="py-3 px-4 text-slate-300">L&T Heavy Engineering</td>
+                      <td class="py-3 px-4 text-slate-400">₹7.50 LPA (Projected)</td>
+                      <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px]">GD ROUND SCHEDULED</span></td>
+                    </tr>
+                    <tr class="hover:bg-slate-900/60 transition">
+                      <td class="py-3 px-4 font-bold text-white font-sans">Abijeeth (STU-2026-004)</td>
+                      <td class="py-3 px-4 text-cyan-300">Artificial Intelligence</td>
+                      <td class="py-3 px-4 text-white">9.6 / 10</td>
+                      <td class="py-3 px-4 text-white font-bold">NVIDIA AI Research Hub</td>
+                      <td class="py-3 px-4 text-emerald-400 font-bold">₹28.00 LPA (Intern)</td>
+                      <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold">PRE-PLACEMENT OFFER</span></td>
+                    </tr>
+                    <tr class="hover:bg-slate-900/60 transition">
+                      <td class="py-3 px-4 font-bold text-white font-sans">Bharathraj (STU-2026-005)</td>
+                      <td class="py-3 px-4 text-cyan-300">Computer Science</td>
+                      <td class="py-3 px-4 text-white">6.9 / 10</td>
+                      <td class="py-3 px-4 text-slate-400">Under Remedial Mentoring</td>
+                      <td class="py-3 px-4 text-rose-400">N/A (Backlogs)</td>
+                      <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px]">BARRED UNTIL ARREAR CLEAR</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= TAB: CENTRAL LIBRARY & E-VAULT ================= -->
+          <div id="tab-library" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-2xl font-black text-white">Central Library & Digital Knowledge Vault</h2>
+                <p class="text-xs text-slate-400">Smart RFID OPAC system, IEEE Xplore, ScienceDirect journals & scholar loan records</p>
+              </div>
+              <span class="text-xs font-mono text-cyan-400 px-3 py-1 rounded-full glass-card border border-cyan-500/30">
+                ● 112,000+ Physical Books • 1.2M E-Journals
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <!-- Digital Subscriptions Panel -->
+              <div class="glass-card rounded-2xl p-6 space-y-4">
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                  <i data-lucide="database" class="w-4 h-4 text-cyan-400"></i> Institutional Consortium Vaults
+                </h3>
+                <div class="space-y-2.5 font-mono text-xs">
+                  <div class="p-3 rounded-xl bg-slate-900/60 border border-blue-900/40 flex justify-between items-center">
+                    <div>
+                      <p class="text-white font-bold font-sans">IEEE Xplore Digital Library</p>
+                      <p class="text-[10px] text-slate-400">Campus IP range: 172.16.0.0/16</p>
+                    </div>
+                    <span class="text-emerald-400 text-[11px] font-bold">ACTIVE</span>
+                  </div>
+                  <div class="p-3 rounded-xl bg-slate-900/60 border border-blue-900/40 flex justify-between items-center">
+                    <div>
+                      <p class="text-white font-bold font-sans">ScienceDirect / Elsevier Hub</p>
+                      <p class="text-[10px] text-slate-400">Unlimited Institutional Access</p>
+                    </div>
+                    <span class="text-emerald-400 text-[11px] font-bold">ACTIVE</span>
+                  </div>
+                  <div class="p-3 rounded-xl bg-slate-900/60 border border-blue-900/40 flex justify-between items-center">
+                    <div>
+                      <p class="text-white font-bold font-sans">ACM Digital Library</p>
+                      <p class="text-[10px] text-slate-400">Sponsored by Computing Division</p>
+                    </div>
+                    <span class="text-emerald-400 text-[11px] font-bold">ACTIVE</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Active RFID Loan Register -->
+              <div class="lg:col-span-2 glass-card rounded-2xl p-6">
+                <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                  <i data-lucide="book-marked" class="w-4 h-4 text-purple-400"></i> Scholar Circulation & RFID Book Transactions
+                </h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs font-mono">
+                    <thead class="border-b border-blue-900/40 text-slate-400 bg-slate-900/70">
+                      <tr>
+                        <th class="py-2.5 px-3 font-semibold">Scholar</th>
+                        <th class="py-2.5 px-3 font-semibold">Accession & Title</th>
+                        <th class="py-2.5 px-3 font-semibold">Borrow Date</th>
+                        <th class="py-2.5 px-3 font-semibold">Due Date</th>
+                        <th class="py-2.5 px-3 font-semibold">Fine Status</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/40">
+                      <tr>
+                        <td class="py-2.5 px-3 text-white font-bold font-sans">Santhosh Kumar</td>
+                        <td class="py-2.5 px-3 text-cyan-300">CS-991: Distributed Operating Systems (Tanenbaum)</td>
+                        <td class="py-2.5 px-3 text-slate-400">Oct 10, 2026</td>
+                        <td class="py-2.5 px-3 text-emerald-400">Nov 10, 2026</td>
+                        <td class="py-2.5 px-3 text-emerald-400">₹0 (On Time)</td>
+                      </tr>
+                      <tr>
+                        <td class="py-2.5 px-3 text-white font-bold font-sans">Abijeeth</td>
+                        <td class="py-2.5 px-3 text-cyan-300">AI-102: Deep Reinforcement Learning (Sutton)</td>
+                        <td class="py-2.5 px-3 text-slate-400">Oct 14, 2026</td>
+                        <td class="py-2.5 px-3 text-emerald-400">Nov 14, 2026</td>
+                        <td class="py-2.5 px-3 text-emerald-400">₹0 (On Time)</td>
+                      </tr>
+                      <tr>
+                        <td class="py-2.5 px-3 text-white font-bold font-sans">Aswin</td>
+                        <td class="py-2.5 px-3 text-cyan-300">EC-441: CMOS VLSI Circuit Analysis (Weste)</td>
+                        <td class="py-2.5 px-3 text-slate-400">Sep 28, 2026</td>
+                        <td class="py-2.5 px-3 text-emerald-400">Oct 28, 2026</td>
+                        <td class="py-2.5 px-3 text-emerald-400">₹0 (On Time)</td>
+                      </tr>
+                      <tr>
+                        <td class="py-2.5 px-3 text-white font-bold font-sans">Bharathraj</td>
+                        <td class="py-2.5 px-3 text-rose-300">CS-302: Advanced Data Structures in C++</td>
+                        <td class="py-2.5 px-3 text-slate-400">Aug 20, 2026</td>
+                        <td class="py-2.5 px-3 text-rose-400">Sep 20, 2026</td>
+                        <td class="py-2.5 px-3 text-rose-400 font-bold">₹150 (Overdue)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= TAB: RESEARCH & INNOVATION ================= -->
+          <div id="tab-research" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-2xl font-black text-white">Directorate of Research, Patents & Startups</h2>
+                <p class="text-xs text-slate-400">Sponsored research grants, faculty patent publications and student incubation cell</p>
+              </div>
+              <span class="text-xs font-mono text-purple-400 px-3 py-1 rounded-full glass-card border border-purple-500/30">
+                Grant Total: ₹4.85 Crores
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-400">
+                <span class="text-xs text-slate-400 font-mono uppercase">Sponsored Project Grants</span>
+                <div class="text-2xl font-black text-white mt-1 font-mono">₹3,42,50,000</div>
+                <p class="text-[10px] text-cyan-300 mt-1">DST, SERB & ISRO RESPOND Programs</p>
+              </div>
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-purple-400">
+                <span class="text-xs text-slate-400 font-mono uppercase">Patents Published & Granted</span>
+                <div class="text-2xl font-black text-purple-400 mt-1 font-mono">18 Published / 7 Granted</div>
+                <p class="text-[10px] text-purple-300 mt-1">Deep Learning & Autonomous Robotics</p>
+              </div>
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-400">
+                <span class="text-xs text-slate-400 font-mono uppercase">Incubated Deep-Tech Startups</span>
+                <div class="text-2xl font-black text-emerald-400 mt-1 font-mono">6 Seeded Companies</div>
+                <p class="text-[10px] text-emerald-300 mt-1">Campus Incubation & MSME Supported</p>
+              </div>
+            </div>
+
+            <!-- Active Research Projects Roster -->
+            <div class="glass-card rounded-2xl p-6">
+              <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <i data-lucide="flask-conical" class="w-4 h-4 text-cyan-400"></i> Active Funded Research Projects
+              </h3>
+              <div class="space-y-3 font-mono text-xs">
+                <div class="p-3.5 rounded-xl bg-slate-900/60 border border-blue-900/30 flex justify-between items-center">
+                  <div>
+                    <h4 class="font-bold text-white font-sans">Autonomous Edge Neural Processing for Space Payloads</h4>
+                    <p class="text-slate-400 text-[11px]">Lead PI: Dr. Vikram Seth • Funded by ISRO RESPOND • Grant: ₹58,00,000</p>
+                    <p class="text-cyan-300 text-[10px] mt-0.5">Student Research Associates: Abijeeth & Santhosh Kumar</p>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 text-[10px]">STAGE 3: BENCHMARKING</span>
+                </div>
+                <div class="p-3.5 rounded-xl bg-slate-900/60 border border-blue-900/30 flex justify-between items-center">
+                  <div>
+                    <h4 class="font-bold text-white font-sans">Sub-10nm FinFET Leakage Current Mitigation in Cryogenic Environments</h4>
+                    <p class="text-slate-400 text-[11px]">Lead PI: Dr. Arvind Swaminathan • Funded by DST-SERB • Grant: ₹84,20,000</p>
+                    <p class="text-cyan-300 text-[10px] mt-0.5">Student Research Associate: Aswin</p>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 text-[10px]">STAGE 2: CHIP FABRICATION</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= TAB: SYNDICATE CIRCULARS & GAZETTES ================= -->
+          <div id="tab-circulars" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-2xl font-black text-white" id="circulars-tab-heading">Autonomous Syndicate & Executive Circulars</h2>
+                <p class="text-xs text-slate-400">Official academic notifications, autonomous syndicate resolutions & exam cell orders</p>
+              </div>
+              <button id="post-circular-btn" onclick="triggerToast('Official circular signed and broadcast to scholar portals!', 'success'); playSuccessChime();" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold text-xs shadow-lg shadow-cyan-500/25 transition">
+                + Draft Academic Gazette
+              </button>
+            </div>
+
+            <div class="space-y-4">
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-400">
+                <div class="flex justify-between items-start text-xs font-mono text-cyan-400 mb-1">
+                  <span>CIRCULAR REF: AUT/2026/CIR-108</span>
+                  <span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">PUBLISHED TODAY</span>
+                </div>
+                <h3 class="text-base font-bold text-white mb-1">Mandatory Biometric Turnstile Clearance for CIA-2 & Final Term Hall Tickets</h3>
+                <p class="text-xs text-slate-300 mb-3 leading-relaxed">
+                  As resolved in the Academic Syndicate Council chaired by <strong>Dean Dr. Muthuvel Pandian</strong>, scholars with cumulative attendance below 75% or unsettled term fee retainers are directed to meet their designated Faculty Advisor prior to the generation of End-Semester Hall Tickets.
+                </p>
+                <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 border-t border-slate-800 pt-2">
+                  <span>Authorized By: <strong>Dr. Muthuvel Pandian, Ph.D.</strong> (Dean of Academic Affairs)</span>
+                  <span class="text-emerald-400 font-bold">DIGITALLY SEALED</span>
+                </div>
+              </div>
+
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-purple-400">
+                <div class="flex justify-between items-start text-xs font-mono text-purple-400 mb-1">
+                  <span>CIRCULAR REF: AUT/2026/CIR-104</span>
+                  <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">OCTOBER 18, 2026</span>
+                </div>
+                <h3 class="text-base font-bold text-white mb-1">Merit Scholarship & Fee Waiver Disbursal Schedule</h3>
+                <p class="text-xs text-slate-300 mb-3 leading-relaxed">
+                  Scholars qualifying for First Graduate waivers and Autonomous Institution Merit Fellowships have had credits adjusted directly in their institutional accounts ledger. Receipts can be downloaded from the Fee Ledger portal.
+                </p>
+                <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 border-t border-slate-800 pt-2">
+                  <span>Approved: Finance Syndicate & Office of Dean Academics</span>
+                  <span class="text-cyan-400 font-bold">CIRCULATED TO DEPARTMENTS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= TAB 4: FACULTY MEMBERS ================= -->
+          <div id="tab-faculty" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-black text-white">Faculty Directory & Research Mentors</h2>
+                <p class="text-xs text-slate-400">Department Heads, Associate Professors, Cabins, Contact & Academic Workload</p>
+              </div>
+              <span class="text-xs font-mono text-cyan-400 px-3 py-1 rounded-full glass-card border border-cyan-500/30">
+                ● 4 Senior Faculty Logged On
+              </span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="faculty-grid"></div>
+          </div>
+
+          <!-- ================= TAB 5: ATTENDANCE & BIOMETRIC GATE ================= -->
+          <div id="tab-attendance" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-black text-white">Live Biometric & RFID Turnstile Gateways</h2>
+                <p class="text-xs text-slate-400">Automated gate check-ins, optical scanners, and classroom attendance logs</p>
+              </div>
+              <button onclick="triggerToast('Refreshing live gate stream...', 'info'); playSciFiTone(650, 'sine', 0.08);" class="px-3 py-1.5 rounded-xl glass-card text-xs text-cyan-300 hover:bg-slate-800 flex items-center gap-1.5">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5 animate-spin"></i> Live Stream
+              </button>
+            </div>
+
+            <!-- RFID Turnstile Gate Scanner Box -->
+            <div class="glass-card rounded-2xl p-6 border border-cyan-500/40 relative overflow-hidden">
+              <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-4">
+                  <div class="relative w-20 h-24 rounded-2xl bg-slate-950 border-2 border-cyan-500/60 flex flex-col items-center justify-center overflow-hidden shadow-lg shadow-cyan-500/30">
+                    <div id="laser-line" class="absolute w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-md shadow-cyan-400 animate-laser-sweep"></div>
+                    <i data-lucide="scan-face" class="w-8 h-8 text-cyan-400 mb-1"></i>
+                    <span class="text-[8px] font-mono text-cyan-300 tracking-wider">RFID READY</span>
+                  </div>
+                  <div>
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                      Academic Gate Turnstile 01
+                      <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono">NFC ONLINE</span>
+                    </h3>
+                    <p class="text-xs text-slate-400">Tap below to simulate an instantaneous biometric RFID student gate swipe</p>
+                  </div>
+                </div>
+
+                <button onclick="simulateRFIDScan()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/30 hover:scale-105 active:scale-95 transition flex items-center gap-2">
+                  <i data-lucide="radio" class="w-4 h-4 animate-pulse"></i>
+                  <span>Simulate RFID Smartcard Tap</span>
+                </button>
+              </div>
+
+              <!-- Live Gate Telemetry Feed -->
+              <div class="mt-4 pt-4 border-t border-cyan-500/20">
+                <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-2">
+                  <span class="flex items-center gap-1.5"><i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Turnstile Telemetry Log</span>
+                  <span class="text-[10px] text-emerald-400">FEED SYNCHRONIZED</span>
+                </div>
+                <div id="gate-logs" class="space-y-1.5 text-[11px] font-mono text-slate-300 max-h-36 overflow-y-auto"></div>
+              </div>
+            </div>
+
+            <!-- Attendance Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div class="glass-card rounded-2xl p-5 text-center" data-tilt>
+                <div class="tilt-shine"></div>
+                <span class="text-xs text-slate-400 uppercase font-mono">Computer Science</span>
+                <div class="text-3xl font-black text-emerald-400 my-2 font-mono">94.2%</div>
+                <p class="text-[11px] text-slate-400">Santhosh Kumar & Bharathraj Cohort</p>
+              </div>
+              <div class="glass-card rounded-2xl p-5 text-center" data-tilt>
+                <div class="tilt-shine"></div>
+                <span class="text-xs text-slate-400 uppercase font-mono">Artificial Intelligence</span>
+                <div class="text-3xl font-black text-cyan-400 my-2 font-mono">98.0%</div>
+                <p class="text-[11px] text-slate-400">Abijeeth Cohort Attendance Lead</p>
+              </div>
+              <div class="glass-card rounded-2xl p-5 text-center" data-tilt>
+                <div class="tilt-shine"></div>
+                <span class="text-xs text-slate-400 uppercase font-mono">Electronics & Comm.</span>
+                <div class="text-3xl font-black text-indigo-400 my-2 font-mono">89.0%</div>
+                <p class="text-[11px] text-slate-400">Aswin Cohort VLSI Session Active</p>
+              </div>
+              <div class="glass-card rounded-2xl p-5 text-center" data-tilt>
+                <div class="tilt-shine"></div>
+                <span class="text-xs text-slate-400 uppercase font-mono">Mechanical Engg.</span>
+                <div class="text-3xl font-black text-amber-400 my-2 font-mono">76.0%</div>
+                <p class="text-[11px] text-slate-400">Bharanidharan Cohort Workshop</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= TAB 6: HOSTEL & TRANSPORT ================= -->
+          <div id="tab-hostel" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-black text-white">Hostel Residency & Campus Fleet Logistics</h2>
+                <p class="text-xs text-slate-400">Residential room allotments, mess subscriptions, bus routes & transport fleet</p>
+              </div>
+              <span class="text-xs font-mono text-cyan-400 px-3 py-1 rounded-full glass-card border border-cyan-500/30">
+                12 Campus Fleet Buses Active
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <!-- Hostel Block Allocation -->
+              <div class="glass-card rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="home" class="w-4 h-4 text-cyan-400"></i> Hostel Blocks & Mess Status
+                  </h3>
+                  <span class="text-xs font-mono text-emerald-400">92% Occupancy</span>
+                </div>
+                <div class="space-y-3 font-mono text-xs">
+                  <div class="p-3 rounded-xl bg-slate-900/60 border border-blue-900/40 flex justify-between items-center">
+                    <div>
+                      <p class="text-white font-bold font-sans">Aryabhatta Boys Hostel (Block A)</p>
+                      <p class="text-slate-400 text-[10px]">Warden: Prof. R. Ramanujan • +91 98765 43210</p>
+                      <p class="text-cyan-300 text-[10px] mt-0.5">Residents: Santhosh Kumar (Room 402), Bharathraj (Room 408)</p>
+                    </div>
+                    <span class="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 text-[10px]">Mess: Veg & Non-Veg</span>
+                  </div>
+                  <div class="p-3 rounded-xl bg-slate-900/60 border border-blue-900/40 flex justify-between items-center">
+                    <div>
+                      <p class="text-white font-bold font-sans">Kalam Scholars Hostel (Block B)</p>
+                      <p class="text-slate-400 text-[10px]">Warden: Dr. T. Srinivasan • +91 98765 43211</p>
+                      <p class="text-cyan-300 text-[10px] mt-0.5">Residents: Abijeeth (Room 214)</p>
+                    </div>
+                    <span class="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 text-[10px]">Mess: South & Continental</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Transport Fleet Routes -->
+              <div class="glass-card rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="bus" class="w-4 h-4 text-purple-400"></i> College Transport Fleet
+                  </h3>
+                  <span class="text-xs font-mono text-cyan-400">GPS Live Tracked</span>
+                </div>
+                <div class="space-y-3 font-mono text-xs">
+                  <div class="p-3 rounded-xl bg-slate-900/60 border border-blue-900/40 flex justify-between items-center">
+                    <div>
+                      <p class="text-white font-bold font-sans">Route 04: Central Metro ⇄ Academic Tech Park</p>
+                      <p class="text-slate-400 text-[10px]">Bus No: TN-09-ER-4401 • Driver: K. Murugan (+91 94440 12345)</p>
+                      <p class="text-cyan-300 text-[10px] mt-0.5">Subscribers: Aswin (Boarding: Metro Stn)</p>
+                    </div>
+                    <span class="px-2 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 text-[10px]">On Route (12 mins away)</span>
+                  </div>
+                  <div class="p-3 rounded-xl bg-slate-900/60 border border-blue-900/40 flex justify-between items-center">
+                    <div>
+                      <p class="text-white font-bold font-sans">Route 11: West Hills ⇄ Engineering Gate 02</p>
+                      <p class="text-slate-400 text-[10px]">Bus No: TN-09-ER-4411 • Driver: P. Velu (+91 94440 67890)</p>
+                      <p class="text-cyan-300 text-[10px] mt-0.5">Subscribers: Bharanidharan (Boarding: West Hills Jn)</p>
+                    </div>
+                    <span class="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 text-[10px]">Campus Parking Arrived</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= TAB 7: TIMETABLE ================= -->
+          <div id="tab-timetable" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-black text-white">Campus Lecture & Lab Schedule Matrix</h2>
+                <p class="text-xs text-slate-400">Real-Time Academic Lecture Grid with Faculty & Room Assignments</p>
+              </div>
+              <div class="flex gap-1.5 p-1 rounded-xl bg-slate-900/80 border border-blue-900/30 text-xs font-mono">
+                <button class="px-3 py-1 rounded-lg bg-blue-600 text-white font-semibold">Today</button>
+                <button class="px-3 py-1 rounded-lg text-slate-400 hover:text-white">Tomorrow</button>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-cyan-400" data-tilt>
+                <div class="tilt-shine"></div>
+                <div class="flex justify-between items-start text-xs font-mono text-cyan-400 mb-1">
+                  <span>09:00 - 10:30 AM</span>
+                  <span class="px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30">In Progress</span>
+                </div>
+                <h4 class="font-bold text-white text-sm">Deep Neural Architectures</h4>
+                <p class="text-xs text-slate-400 mt-1">Hall 402 • Prof. Sunita Rao</p>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full mt-4 overflow-hidden">
+                  <div class="bg-cyan-400 h-full rounded-full w-2/3"></div>
+                </div>
+              </div>
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-purple-400" data-tilt>
+                <div class="tilt-shine"></div>
+                <div class="flex justify-between items-start text-xs font-mono text-purple-400 mb-1">
+                  <span>11:00 - 12:30 PM</span>
+                  <span class="px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/30">Upcoming</span>
+                </div>
+                <h4 class="font-bold text-white text-sm">Compiler Design & OS</h4>
+                <p class="text-xs text-slate-400 mt-1">Lab B • Dr. Vikram Seth</p>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full mt-4 overflow-hidden">
+                  <div class="bg-purple-400 h-full rounded-full w-0"></div>
+                </div>
+              </div>
+              <div class="glass-card rounded-2xl p-5 border-l-4 border-l-emerald-400" data-tilt>
+                <div class="tilt-shine"></div>
+                <div class="flex justify-between items-start text-xs font-mono text-emerald-400 mb-1">
+                  <span>02:00 - 03:30 PM</span>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30">Scheduled</span>
+                </div>
+                <h4 class="font-bold text-white text-sm">VLSI System Design</h4>
+                <p class="text-xs text-slate-400 mt-1">Lecture Hall 101 • Dr. Arvind Swaminathan</p>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full mt-4 overflow-hidden">
+                  <div class="bg-emerald-400 h-full rounded-full w-0"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================= TAB 8: EXAMS & CGPA ================= -->
+          <div id="tab-exams" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-black text-white">Examinations, CIA Internal Assessments & Hall Tickets</h2>
+                <p class="text-xs text-slate-400">Continuous Internal Assessments (CIA 1 & 2), CGPA ledger & official hall tickets</p>
+              </div>
+              <button onclick="triggerToast('Official transcripts compiled and verified', 'success'); playSuccessChime();" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold text-xs shadow-lg shadow-cyan-500/25 hover:brightness-110 transition">
+                Publish Term Results
+              </button>
+            </div>
+
+            <!-- Exam Schedule List -->
+            <div class="glass-card rounded-2xl p-6">
+              <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <i data-lucide="calendar-check" class="w-4 h-4 text-cyan-400"></i> Upcoming End-Semester Schedule (Fall Term)
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-xs">
+                <div class="p-3 rounded-xl bg-slate-900/60 border border-blue-900/30">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-white font-bold font-sans">Distributed Systems & Cloud (CS-601)</span>
+                    <span class="px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-[10px]">Nov 04 • 09:30 AM</span>
+                  </div>
+                  <p class="text-slate-400 text-[11px]">Candidates: Santhosh Kumar, Bharathraj (Hall Ticket condition applies)</p>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-900/60 border border-blue-900/30">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-white font-bold font-sans">Deep Neural Networks & NLP (AI-402)</span>
+                    <span class="px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-[10px]">Nov 08 • 09:30 AM</span>
+                  </div>
+                  <p class="text-slate-400 text-[11px]">Candidates: Abijeeth, et al. (Hall 301)</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detailed Scorecard Grid -->
+            <div class="glass-card rounded-2xl p-6">
+              <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <i data-lucide="award" class="w-4 h-4 text-purple-400"></i> Internal Assessment & Hall Ticket Issuance
+              </h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs font-mono">
+                  <thead class="border-b border-blue-900/40 text-slate-400 bg-slate-900/70">
+                    <tr>
+                      <th class="py-3 px-4 font-semibold">Student Name</th>
+                      <th class="py-3 px-4 font-semibold">CIA-1 (50)</th>
+                      <th class="py-3 px-4 font-semibold">CIA-2 (50)</th>
+                      <th class="py-3 px-4 font-semibold">Credits Earned</th>
+                      <th class="py-3 px-4 font-semibold">Current CGPA</th>
+                      <th class="py-3 px-4 font-semibold">Hall Ticket Status</th>
+                      <th class="py-3 px-4 font-semibold text-right">Hall Ticket Pass</th>
+                    </tr>
+                  </thead>
+                  <tbody id="exam-roster-body" class="divide-y divide-slate-800/40"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ADD STUDENT ================= -->
+  <div id="add-student-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-lg rounded-3xl p-6 border border-cyan-500/40 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+      <button onclick="closeModal('add-student-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <h3 class="text-lg font-bold text-white mb-1">Enroll New Student with Fee Setup</h3>
+      <p class="text-xs text-slate-400 mb-4 font-mono">Enrolled directly into persistent institutional database</p>
+
+      <form onsubmit="handleCreateStudent(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block text-slate-300 mb-1">Full Student Name</label>
+          <input id="new-name" required placeholder="e.g. Rahul Sharma" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-blue-900/40 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 mb-1">Academic Department</label>
+            <select id="new-dept" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-blue-900/40 text-white focus:outline-none font-mono">
+              <option>Computer Science</option>
+              <option>Artificial Intelligence</option>
+              <option>Electronics & Comm.</option>
+              <option>Mechanical Engg.</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 mb-1">Academic Year</label>
+            <select id="new-year" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-blue-900/40 text-white focus:outline-none font-mono">
+              <option>1st Year</option>
+              <option>2nd Year</option>
+              <option>3rd Year</option>
+              <option>4th Year</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 mb-1">Admission Quota</label>
+            <select id="new-quota" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-blue-900/40 text-white focus:outline-none font-mono">
+              <option>Merit / Government</option>
+              <option>Management</option>
+              <option>Sports Quota</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 mb-1">Residency Type</label>
+            <select id="new-residence" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-blue-900/40 text-white focus:outline-none font-mono">
+              <option>Hostel Block A</option>
+              <option>Hostel Block B</option>
+              <option>Day Scholar (Bus)</option>
+              <option>Day Scholar (Self)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-900/90 border border-cyan-500/20 space-y-2">
+          <p class="font-bold text-cyan-300 text-[11px] font-mono">Fee Assessment Setup (INR)</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-slate-400 text-[10px]">Total Term Fee (₹)</label>
+              <input id="new-total-fee" type="number" value="85000" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-950 border border-blue-900/40 text-white font-mono" />
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[10px]">Initial Paid Amount (₹)</label>
+              <input id="new-paid-fee" type="number" value="85000" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-950 border border-blue-900/40 text-white font-mono" />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 mb-1">Target CGPA</label>
+            <input id="new-cgpa" type="number" step="0.1" min="0" max="10" value="8.5" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-blue-900/40 text-white focus:outline-none font-mono" />
+          </div>
+          <div>
+            <label class="block text-slate-300 mb-1">Parent Contact Mobile</label>
+            <input id="new-parent" value="+91 98401 22334" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-blue-900/40 text-white focus:outline-none font-mono" />
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 text-white font-semibold shadow-lg shadow-cyan-500/30 hover:brightness-110 transition">
+            Save & Enroll Scholar
+          </button>
+          <button type="button" onclick="closeModal('add-student-modal')" class="px-4 py-2.5 rounded-xl glass-card text-slate-300 hover:bg-slate-800 transition">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: QUICK FEE COLLECTION ================= -->
+  <div id="quick-pay-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-md rounded-3xl p-6 border border-emerald-500/40 relative shadow-2xl">
+      <button onclick="closeModal('quick-pay-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="p-3 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+          <i data-lucide="credit-card" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-white">Institutional Fee Counter</h3>
+          <p class="text-xs text-slate-400 font-mono">Direct Student Payment Settlement</p>
+        </div>
+      </div>
+
+      <form onsubmit="handleFeePaymentSubmit(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block text-slate-300 mb-1 font-mono">Select Student</label>
+          <select id="pay-student-select" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-blue-900/40 text-white focus:outline-none font-mono"></select>
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1 font-mono">Settlement Amount (INR ₹)</label>
+          <input id="pay-amount" type="number" required placeholder="e.g. 25000" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-blue-900/40 text-white focus:outline-none font-mono" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 mb-1 font-mono">Payment Gateway / Mode</label>
+            <select id="pay-mode" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-blue-900/40 text-white focus:outline-none font-mono">
+              <option>UPI / QR Instant</option>
+              <option>Net Banking / NEFT</option>
+              <option>Card / POS Machine</option>
+              <option>Demand Draft / Cash</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-300 mb-1 font-mono">Fee Head</label>
+            <select id="pay-head" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-blue-900/40 text-white focus:outline-none font-mono">
+              <option>Term Tuition Fee</option>
+              <option>Hostel & Mess Dues</option>
+              <option>Special Lab Retainer</option>
+              <option>Exam & Hall Ticket Fee</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="submit" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-bold shadow-lg shadow-emerald-500/30 hover:brightness-110 active:scale-95 transition">
+            Process Payment & Generate Receipt
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: OFFICIAL FEE RECEIPT / INVOICE ================= -->
+  <div id="receipt-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div id="printable-area" class="glass-card w-full max-w-lg rounded-3xl p-6 border border-cyan-500/40 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+      <button onclick="closeModal('receipt-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-white print:hidden">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="border-b border-cyan-500/20 pb-4 mb-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-black text-white tracking-tight">CAMPUS AUTONOMOUS INSTITUTE</h3>
+            <p class="text-[10px] text-cyan-400 font-mono" id="receipt-dean-sign">OFFICE OF ACADEMIC AFFAIRS • OFFICIAL TREASURY</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-mono font-bold">OFFICIAL RECEIPT</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 text-xs font-mono mb-4">
+        <div>
+          <span class="text-slate-400 text-[10px]">STUDENT NAME:</span>
+          <p id="rec-student-name" class="font-bold text-white text-sm font-sans">Santhosh Kumar</p>
+          <span class="text-slate-400 text-[10px]">ROLL NO / REGISTRATION:</span>
+          <p id="rec-student-id" class="text-cyan-300 font-bold">STU-2026-001</p>
+        </div>
+        <div class="text-right">
+          <span class="text-slate-400 text-[10px]">RECEIPT NUMBER:</span>
+          <p id="rec-txn-num" class="text-amber-300 font-bold">TXN-99812</p>
+          <span class="text-slate-400 text-[10px]">PAYMENT DATE:</span>
+          <p id="rec-date" class="text-white">Today</p>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/90 border border-blue-900/40 mb-4 font-mono text-xs">
+        <div class="flex justify-between py-1.5 border-b border-slate-800 text-slate-400 text-[10px]">
+          <span>FEE COMPONENT DESCRIPTION</span>
+          <span>AMOUNT (INR)</span>
+        </div>
+        <div class="flex justify-between py-1.5 text-slate-200">
+          <span>Semester Tuition & Academic Lectures</span>
+          <span id="rec-tuition">₹45,000.00</span>
+        </div>
+        <div class="flex justify-between py-1.5 text-slate-200">
+          <span>Laboratory, Cloud Infrastructure & Wi-Fi</span>
+          <span id="rec-lab">₹15,000.00</span>
+        </div>
+        <div class="flex justify-between py-1.5 text-slate-200">
+          <span>Hostel, Mess & Transportation Facility</span>
+          <span id="rec-hostel">₹20,000.00</span>
+        </div>
+        <div class="flex justify-between py-1.5 text-slate-200">
+          <span>Exam Cell, Assessments & Library Corpus</span>
+          <span id="rec-exam">₹5,000.00</span>
+        </div>
+        <div class="flex justify-between py-2 border-t border-cyan-500/40 text-sm font-bold text-white mt-1">
+          <span>TOTAL SETTLED AMOUNT</span>
+          <span class="text-emerald-400" id="rec-total-paid">₹85,000.00</span>
+        </div>
+        <div class="flex justify-between py-1 text-xs text-rose-300 font-bold">
+          <span>PENDING DUES REMAINING</span>
+          <span id="rec-pending-amount">₹0.00</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 border-t border-cyan-500/20 pt-3">
+        <span class="flex items-center gap-1.5 text-emerald-400" id="receipt-auth-footer">
+          <i data-lucide="shield-check" class="w-4 h-4"></i> Countersigned: Dean Dr. Muthuvel Pandian
+        </span>
+        <button onclick="window.print()" class="px-3 py-1.5 rounded-lg glass-card hover:bg-slate-800 text-cyan-300 transition flex items-center gap-1.5 print:hidden">
+          <i data-lucide="printer" class="w-3 h-3"></i> Print / Save PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: 3D HOLOGRAPHIC STUDENT CYBER ID BADGE ================= -->
+  <div id="view-student-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="w-full max-w-sm rounded-3xl p-1 holographic-badge shadow-2xl relative" data-tilt>
+      <div class="glass-card rounded-[1.4rem] p-6 border-0 bg-slate-950/90 relative">
+        <div class="tilt-shine"></div>
+        <button onclick="closeModal('view-student-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Top Holographic Chip Banner -->
+        <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-lg shadow-cyan-400 animate-ping"></span>
+            <span class="text-[10px] font-mono tracking-widest text-cyan-300">CAMPUS RFID SECURE</span>
+          </div>
+          <div class="w-7 h-5 rounded bg-gradient-to-tr from-amber-400 to-amber-200 border border-amber-600/60 shadow-inner flex items-center justify-center">
+            <div class="w-4 h-3 border border-amber-700/50 rounded-sm"></div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 mb-4">
+          <div id="modal-stu-avatar" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-600 to-indigo-600 flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-cyan-500/40">
+            S
+          </div>
+          <div>
+            <h3 id="modal-stu-name" class="text-base font-bold text-white">Student Name</h3>
+            <p id="modal-stu-id" class="text-xs text-cyan-400 font-mono tracking-wider">STU-000</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs mb-4 font-mono">
+          <div class="p-2 rounded-xl bg-slate-900/70 border border-blue-900/40">
+            <div class="text-slate-400 text-[10px]">Department</div>
+            <div id="modal-stu-dept" class="font-bold text-white mt-0.5 truncate font-sans">Computer Science</div>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-900/70 border border-blue-900/40">
+            <div class="text-slate-400 text-[10px]">Fee Status</div>
+            <div id="modal-stu-fee-badge" class="font-bold text-emerald-400 mt-0.5">PAID</div>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-900/70 border border-blue-900/40">
+            <div class="text-slate-400 text-[10px]">Theory / Lab Att.</div>
+            <div id="modal-stu-att" class="font-bold text-emerald-400 mt-0.5">94%</div>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-900/70 border border-blue-900/40">
+            <div class="text-slate-400 text-[10px]">Cumulative CGPA</div>
+            <div id="modal-stu-gpa" class="font-bold text-cyan-400 mt-0.5">9.1 / 10</div>
+          </div>
+        </div>
+
+        <!-- Extra Details Roster -->
+        <div class="space-y-1.5 text-[10px] font-mono text-slate-300 p-3 rounded-xl bg-slate-900/80 border border-blue-900/40 mb-4">
+          <div class="flex justify-between"><span>Residence:</span> <strong class="text-white" id="modal-stu-residence">Hostel Block A</strong></div>
+          <div class="flex justify-between"><span>Standing Backlogs:</span> <strong id="modal-stu-backlogs">0 Arrears</strong></div>
+          <div class="flex justify-between"><span>Parent Contact:</span> <strong class="text-cyan-300" id="modal-stu-parent">+91 94441 23456</strong></div>
+        </div>
+
+        <div class="flex gap-2">
+          <button onclick="triggerToast('Digital Holographic Pass sent to student portal!', 'success'); closeModal('view-student-modal'); playSciFiTone(950, 'sine', 0.1);" class="flex-1 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/30 hover:brightness-110 transition">
+            Dispatch Digital Pass
+          </button>
+          <button onclick="closeModal('view-student-modal')" class="px-4 py-2 rounded-xl text-xs glass-card text-slate-300 hover:bg-slate-800 transition">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: OFFICIAL HALL TICKET PREVIEW ================= -->
+  <div id="hall-ticket-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-lg rounded-3xl p-6 border border-cyan-500/40 relative shadow-2xl">
+      <button onclick="closeModal('hall-ticket-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="text-center border-b border-cyan-500/30 pb-3 mb-4">
+        <h3 class="text-base font-black text-white">AUTONOMOUS END-SEMESTER EXAMINATIONS - FALL 2026</h3>
+        <p class="text-[10px] text-cyan-300 font-mono" id="ht-header-label">OFFICE OF THE CONTROLLER OF EXAMINATIONS • DEAN: DR. MUTHUVEL PANDIAN</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/90 border border-blue-900/40 mb-4 font-mono text-xs">
+        <div class="grid grid-cols-2 gap-2 mb-3">
+          <div>
+            <span class="text-slate-400 text-[10px]">CANDIDATE:</span>
+            <p id="ht-name" class="font-bold text-white font-sans text-sm">Santhosh Kumar</p>
+            <p id="ht-id" class="text-cyan-300 font-bold">STU-2026-001</p>
+          </div>
+          <div class="text-right">
+            <span class="text-slate-400 text-[10px]">DEPARTMENT:</span>
+            <p id="ht-dept" class="font-bold text-white font-sans">Computer Science</p>
+            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">APPROVED (CLEARED)</span>
+          </div>
+        </div>
+
+        <div class="border-t border-slate-800 pt-2 text-[11px] space-y-1">
+          <div class="flex justify-between"><span>Exam Center:</span> <strong class="text-white">Tech Park Hall 302</strong></div>
+          <div class="flex justify-between"><span>Reporting Time:</span> <strong class="text-white">09:00 AM IST</strong></div>
+          <div class="flex justify-between"><span>Identity Mode:</span> <strong class="text-cyan-300">Biometric RFID + Hologram ID</strong></div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+        <span class="text-emerald-400" id="ht-sign-label">Signed: Dr. Muthuvel Pandian (Dean Academics)</span>
+        <button onclick="window.print()" class="px-3 py-1.5 rounded-lg bg-cyan-500 text-black font-bold hover:brightness-110 transition">
+          Print Hall Ticket
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // ---------------- Polyphonic Web Audio Engine ----------------
+    let soundEnabled = true;
+    let voiceAIEnabled = true;
+    let audioCtx = null;
+
+    function playSciFiTone(freq = 440, type = 'sine', duration = 0.08) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playSuccessChime() {
+      if (!soundEnabled) return;
+      [523.25, 659.25, 783.99, 1046.50].forEach((f, idx) => {
+        setTimeout(() => playSciFiTone(f, 'triangle', 0.12), idx * 60);
+      });
+    }
+
+    function toggleSoundFX() {
+      soundEnabled = !soundEnabled;
+      const icon = document.getElementById('sound-icon');
+      if (soundEnabled) {
+        icon.setAttribute('data-lucide', 'volume-2');
+        triggerToast('Interactive Audio Feedback: ON', 'info');
+        playSciFiTone(600, 'sine', 0.1);
+      } else {
+        icon.setAttribute('data-lucide', 'volume-x');
+        triggerToast('Interactive Audio Feedback: OFF', 'info');
+      }
+      lucide.createIcons();
+    }
+
+    // ---------------- Voice AI Speech Synthesizer ----------------
+    function speakVoice(text) {
+      if (!voiceAIEnabled || !('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.pitch = 1.05;
+      utterance.rate = 1.05;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function toggleVoiceAI() {
+      voiceAIEnabled = !voiceAIEnabled;
+      const icon = document.getElementById('voice-icon');
+      if (voiceAIEnabled) {
+        icon.className = "w-4 h-4 text-cyan-400";
+        triggerToast('Campus Voice Announcer: ONLINE', 'info');
+        speakVoice("Campus AI Voice announcer engaged.");
+      } else {
+        icon.className = "w-4 h-4 text-slate-500";
+        triggerToast('Campus Voice Announcer: MUTED', 'info');
+      }
+    }
+
+    // ---------------- Kinetic Mouse Sparks ----------------
+    window.addEventListener('click', (e) => {
+      const colors = ['#38bdf8', '#818cf8', '#10b981', '#f43f5e', '#3b82f6'];
+      for (let i = 0; i < 8; i++) {
+        const spark = document.createElement('div');
+        spark.className = 'click-spark';
+        spark.style.left = `${e.clientX}px`;
+        spark.style.top = `${e.clientY}px`;
+        spark.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 55 + 20;
+        spark.style.setProperty('--travel', `translate(${Math.cos(angle) * velocity}px, ${Math.sin(angle) * velocity}px)`);
+        document.body.appendChild(spark);
+        setTimeout(() => spark.remove(), 600);
+      }
+    });
+
+    // ---------------- Scramble Text Effect ----------------
+    function scrambleText(element, finalText, duration = 650) {
+      if (!element) return;
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ｦｱｳｴｵｶｷｹｺｻｼｽｾｿ#@%&*";
+      let start = Date.now();
+      let timer = setInterval(() => {
+        let elapsed = Date.now() - start;
+        let progress = elapsed / duration;
+        if (progress >= 1) {
+          element.innerText = finalText;
+          clearInterval(timer);
+        } else {
+          let scrambled = finalText.split('').map((char, index) => {
+            if (char === ' ') return ' ';
+            if (index / finalText.length < progress) return char;
+            return chars[Math.floor(Math.random() * chars.length)];
+          }).join('');
+          element.innerText = scrambled;
+        }
+      }, 35);
+    }
+
+    // ---------------- Interactive Neural Canvas Engine ----------------
+    const canvas = document.getElementById('neural-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouse = { x: null, y: null, radius: 155 };
+    let particleMultiplier = 1;
+    let gridOffset = 0;
+
+    function initCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      particles = [];
+      const count = Math.floor((canvas.width * canvas.height) / 13000);
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.85,
+          vy: (Math.random() - 0.5) * 0.85,
+          radius: Math.random() * 1.8 + 0.8
+        });
+      }
+    }
+
+    window.addEventListener('resize', initCanvas);
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      const glow = document.getElementById('cursor-glow');
+      if (glow) {
+        glow.style.left = `${e.clientX}px`;
+        glow.style.top = `${e.clientY}px`;
+      }
+    });
+
+    function renderCyberEngine() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const horizonY = canvas.height * 0.75;
+      gridOffset = (gridOffset + 0.6 * particleMultiplier) % 40;
+
+      ctx.save();
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+      ctx.lineWidth = 1;
+
+      for (let y = horizonY; y < canvas.height; y += (y - horizonY) * 0.28 + 12) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+
+      const numRays = 18;
+      const centerX = canvas.width / 2;
+      for (let i = -numRays; i <= numRays; i++) {
+        ctx.beginPath();
+        ctx.moveTo(centerX, horizonY);
+        ctx.lineTo(centerX + i * 90 + (gridOffset * (i > 0 ? 1 : -1)), canvas.height);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        p.x += p.vx * particleMultiplier;
+        p.y += p.vy * particleMultiplier;
+
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        let dx = mouse.x - p.x;
+        let dy = mouse.y - p.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < mouse.radius) {
+          p.x -= (dx / dist) * 2;
+          p.y -= (dy / dist) * 2;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.55)';
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          let p2 = particles[j];
+          let d2 = Math.hypot(p.x - p2.x, p.y - p2.y);
+          if (d2 < 120) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(56, 189, 248, ${0.18 * (1 - d2 / 120)})`;
+            ctx.lineWidth = 0.75;
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(renderCyberEngine);
+    }
+    initCanvas();
+    renderCyberEngine();
+
+    // ---------------- 3D Tilt Engine ----------------
+    function initTiltCards() {
+      document.querySelectorAll('[data-tilt]').forEach(card => {
+        const shine = card.querySelector('.tilt-shine');
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -8;
+          const rotateY = ((x - centerX) / centerX) * 8;
+          
+          card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+          if (shine) {
+            shine.style.opacity = '1';
+            shine.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.24) 0%, transparent 65%)`;
+          }
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+          if (shine) shine.style.opacity = '0';
+        });
+      });
+    }
+
+    // ---------------- Overdrive & CRT Scanlines ----------------
+    let overdriveActive = false;
+    function toggleOverdrive() {
+      overdriveActive = !overdriveActive;
+      const body = document.body;
+      const status = document.getElementById('overdrive-status');
+      if (overdriveActive) {
+        body.classList.add('overdrive-mode');
+        status.innerText = 'ON';
+        particleMultiplier = 3.5;
+        playSciFiTone(900, 'sawtooth', 0.2);
+        triggerToast('QUANTUM OVERDRIVE ENGAGED: 3.5X SPEED', 'success');
+        speakVoice("Quantum overdrive activated.");
+      } else {
+        body.classList.remove('overdrive-mode');
+        status.innerText = 'OFF';
+        particleMultiplier = 1;
+        playSciFiTone(400, 'sine', 0.1);
+        triggerToast('Quantum Overdrive: Deactivated', 'info');
+      }
+    }
+
+    let scanlinesActive = false;
+    function toggleCyberScanlines() {
+      scanlinesActive = !scanlinesActive;
+      document.body.classList.toggle('cyber-scanlines', scanlinesActive);
+      document.getElementById('crt-status').innerText = scanlinesActive ? 'ON' : 'OFF';
+      playSciFiTone(700, 'square', 0.08);
+      triggerToast(`Cyber CRT Scanline Overlay: ${scanlinesActive ? 'ENABLED' : 'DISABLED'}`, 'info');
+    }
+
+    function toggleAICopilot() {
+      playSciFiTone(750, 'sine', 0.08);
+      document.getElementById('ai-copilot-modal').classList.toggle('hidden');
+      lucide.createIcons();
+    }
+
+    function executeAIAdvisory() {
+      const text = selectedRole === 'admin' 
+        ? "Autonomous Advisory Dispatched to Dean Dr. Muthuvel Pandian" 
+        : (selectedRole === 'faculty' 
+          ? "Faculty Assessment Roster Dispatched to Dr. Vikram Seth" 
+          : "Scholar Term Clearance & Hall Ticket Verified for Santhosh Kumar");
+      triggerToast(text, 'success');
+      playSuccessChime();
+      toggleAICopilot();
+      speakVoice(text);
+    }
+
+    setInterval(() => {
+      const pingEl = document.getElementById('ping-latency');
+      if (pingEl) pingEl.innerText = Math.floor(Math.random() * 5) + 10;
+    }, 3500);
+
+    // ---------------- PRESERVED ORIGINAL STUDENT DATA ----------------
+    const DEFAULT_STUDENTS = [
+      {
+        id: "STU-2026-001",
+        name: "Santhosh Kumar",
+        dept: "Computer Science",
+        year: "3rd Year",
+        attendance: 94,
+        attTheory: 95,
+        attLab: 92,
+        gpa: 9.1,
+        status: "Active",
+        feeStatus: "PAID",
+        totalFee: 85000,
+        paidFee: 85000,
+        pendingFee: 0,
+        feeBreakdown: { tuition: 45000, lab: 15000, hostel: 20000, exam: 5000 },
+        lastTxn: "TXN-99812",
+        quota: "Merit / Govt",
+        residence: "Hostel Block A (Room 402)",
+        backlogs: 0,
+        parentContact: "+91 94441 23456",
+        cia1: 48,
+        cia2: 49,
+        credits: 112
+      },
+      {
+        id: "STU-2026-002",
+        name: "Aswin",
+        dept: "Electronics & Comm.",
+        year: "4th Year",
+        attendance: 89,
+        attTheory: 88,
+        attLab: 90,
+        gpa: 8.8,
+        status: "Active",
+        feeStatus: "PAID",
+        totalFee: 82000,
+        paidFee: 82000,
+        pendingFee: 0,
+        feeBreakdown: { tuition: 42000, lab: 16000, hostel: 19000, exam: 5000 },
+        lastTxn: "TXN-99814",
+        quota: "Management",
+        residence: "Day Scholar (Bus Route 04)",
+        backlogs: 0,
+        parentContact: "+91 98840 55677",
+        cia1: 44,
+        cia2: 46,
+        credits: 148
+      },
+      {
+        id: "STU-2026-003",
+        name: "Bharanidharan",
+        dept: "Mechanical Engg.",
+        year: "2nd Year",
+        attendance: 76,
+        attTheory: 78,
+        attLab: 74,
+        gpa: 7.4,
+        status: "Warning",
+        feeStatus: "PARTIAL",
+        totalFee: 75000,
+        paidFee: 40000,
+        pendingFee: 35000,
+        feeBreakdown: { tuition: 40000, lab: 12000, hostel: 18000, exam: 5000 },
+        lastTxn: "TXN-98440",
+        quota: "Merit / Govt",
+        residence: "Day Scholar (Bus Route 11)",
+        backlogs: 1,
+        parentContact: "+91 97910 11223",
+        cia1: 36,
+        cia2: 38,
+        credits: 64
+      },
+      {
+        id: "STU-2026-004",
+        name: "Abijeeth",
+        dept: "Artificial Intelligence",
+        year: "1st Year",
+        attendance: 98,
+        attTheory: 99,
+        attLab: 97,
+        gpa: 9.6,
+        status: "Active",
+        feeStatus: "PAID",
+        totalFee: 90000,
+        paidFee: 90000,
+        pendingFee: 0,
+        feeBreakdown: { tuition: 48000, lab: 18000, hostel: 19000, exam: 5000 },
+        lastTxn: "TXN-99813",
+        quota: "Merit Special",
+        residence: "Hostel Block B (Room 214)",
+        backlogs: 0,
+        parentContact: "+91 93810 99887",
+        cia1: 50,
+        cia2: 49,
+        credits: 32
+      },
+      {
+        id: "STU-2026-005",
+        name: "Bharathraj",
+        dept: "Computer Science",
+        year: "3rd Year",
+        attendance: 68,
+        attTheory: 65,
+        attLab: 71,
+        gpa: 6.9,
+        status: "Probation",
+        feeStatus: "PENDING",
+        totalFee: 85000,
+        paidFee: 65000,
+        pendingFee: 20000,
+        feeBreakdown: { tuition: 45000, lab: 15000, hostel: 20000, exam: 5000 },
+        lastTxn: "TXN-97331",
+        quota: "Sports Quota",
+        residence: "Hostel Block A (Room 408)",
+        backlogs: 2,
+        parentContact: "+91 94432 77889",
+        cia1: 32,
+        cia2: 34,
+        credits: 104
+      }
+    ];
+
+    const facultyData = [
+      { 
+        name: "Dr. Vikram Seth", 
+        dept: "Computer Science", 
+        role: "Head of Dept & AI Specialist", 
+        email: "v.seth@college.edu", 
+        exp: "14 yrs", 
+        status: "In Lecture",
+        cabin: "Tech Block 304",
+        subjects: "Compiler Design, Cloud Architecture",
+        publications: "24 IEEE Papers"
+      },
+      { 
+        name: "Prof. Sunita Rao", 
+        dept: "Artificial Intelligence", 
+        role: "Associate Professor", 
+        email: "s.rao@college.edu", 
+        exp: "9 yrs", 
+        status: "Available",
+        cabin: "AI Research Hub 102",
+        subjects: "Deep Learning, Natural Language Processing",
+        publications: "16 Scopus Citations"
+      },
+      { 
+        name: "Dr. Arvind Swaminathan", 
+        dept: "Electronics & Comm.", 
+        role: "Professor, VLSI Design", 
+        email: "a.swami@college.edu", 
+        exp: "18 yrs", 
+        status: "Office Hours",
+        cabin: "VLSI Cleanroom Lab 201",
+        subjects: "Embedded Systems, Nanotechnology",
+        publications: "31 Patents & Papers"
+      },
+      { 
+        name: "Dr. Priya Deshmukh", 
+        dept: "Mechanical Engg.", 
+        role: "Associate Dean & Professor", 
+        email: "p.deshmukh@college.edu", 
+        exp: "12 yrs", 
+        status: "Available",
+        cabin: "Robotics & CAD Hall 05",
+        subjects: "Thermodynamics, Finite Element Analysis",
+        publications: "19 Journals"
+      }
+    ];
+
+    function loadStudents() {
+      const stored = localStorage.getItem('campus_students_data_v3');
+      if (stored) {
+        try { return JSON.parse(stored); } catch (e) { return DEFAULT_STUDENTS; }
+      }
+      localStorage.setItem('campus_students_data_v3', JSON.stringify(DEFAULT_STUDENTS));
+      return DEFAULT_STUDENTS;
+    }
+
+    let studentsData = loadStudents();
+
+    function saveStudents() {
+      localStorage.setItem('campus_students_data_v3', JSON.stringify(studentsData));
+      updateCounts();
+    }
+
+    function resetToDefaultData() {
+      playSciFiTone(350, 'square', 0.1);
+      studentsData = JSON.parse(JSON.stringify(DEFAULT_STUDENTS));
+      saveStudents();
+      renderStudents(getDisplayStudents());
+      renderFeesMaster(getDisplayStudents());
+      renderExamRoster();
+      populateStudentSelects();
+      triggerToast('System restored to default operational datasets', 'info');
+      speakVoice("System registry reset to default parameters.");
+    }
+
+    // ---------------- UNIQUE ROLE DEFINITIONS & CONFIGURATIONS ----------------
+    let selectedRole = 'admin'; // 'admin' | 'faculty' | 'student'
+
+    const ROLE_CONFIGS = {
+      admin: {
+        roleKey: 'admin',
+        userName: "Dr. Muthuvel Pandian",
+        userRole: "Dean of Academic Affairs",
+        shortInitials: "MP",
+        loginEmail: "dean.muthuvel@college.edu",
+        loginSubtitle: "Office of the Dean • Dr. Muthuvel Pandian",
+        loginQuickText: "⚡ One-Click Access (Dean Dr. Muthuvel Pandian)",
+        welcomeVoice: "Access granted. Welcome back Dean Dr. Muthuvel Pandian to Campus ERP.",
+        welcomeToast: "Welcome Dean Dr. Muthuvel Pandian",
+        sidebarLabel: "Dean Workspace",
+        topSubline: "DEAN's TELEMETRY RUNNING",
+        dashHeading: "Autonomous Academic Intelligence Hub",
+        dashSubHeading: "Academic Term 2026 • Under Direction of Dean Dr. Muthuvel Pandian • Real-Time Telemetry",
+        bannerRoleIcon: "🏛️",
+        bannerTitle: "Central Campus Directorate of Academic Affairs",
+        bannerSub: "Dean: <span class='text-cyan-300 font-semibold'>Dr. Muthuvel Pandian, Ph.D.</span> • Autonomous Council Chair",
+        studentsTabTitle: "Comprehensive Student Academic Records",
+        feeAuditor: "Audited by Dr. Muthuvel Pandian (Dean Academics)",
+        receiptDeanSign: "OFFICE OF ACADEMIC AFFAIRS • DR. MUTHUVEL PANDIAN, DEAN",
+        receiptAuthFooter: "Countersigned: Dean Dr. Muthuvel Pandian",
+        copilotTitle: "Dean Neural Co-Pilot",
+        copilotSubtitle: "Academic Predictive Intelligence for Dr. Muthuvel Pandian",
+        copilotBtnText: "Execute Dr. Muthuvel Pandian's Dean Action Order",
+        copilotInsights: [
+          {
+            icon: "zap",
+            color: "cyan",
+            title: "Semester Fee Recovery Prediction",
+            desc: "Predicted collection efficiency for pending dues (₹55,000 across Bharanidharan & Bharathraj) is 92.4% prior to end-semester examinations. Automatic reminders scheduled."
+          },
+          {
+            icon: "alert-triangle",
+            color: "amber",
+            title: "Examination Clearance Barometer",
+            desc: "Scholar Bharathraj (68% Attendance, ₹20,000 pending fee, 2 arrears) requires Dr. Muthuvel Pandian's condonation approval before hall ticket generation."
+          },
+          {
+            icon: "trophy",
+            color: "emerald",
+            title: "Star Scholar Telemetry",
+            desc: "Scholars Abijeeth (9.6 CGPA, 98% att) and Santhosh Kumar (9.1 CGPA, 94% att) qualify for Autonomous Institute Merit Fellowship 2026."
+          }
+        ]
+      },
+      faculty: {
+        roleKey: 'faculty',
+        userName: "Dr. Vikram Seth",
+        userRole: "Professor & Head of Computer Science",
+        shortInitials: "VS",
+        loginEmail: "v.seth@college.edu",
+        loginSubtitle: "Faculty Department Portal • Dr. Vikram Seth (HoD CS)",
+        loginQuickText: "⚡ One-Click Access (Faculty: Dr. Vikram Seth)",
+        welcomeVoice: "Access granted. Welcome Professor Dr. Vikram Seth to Departmental Workstation.",
+        welcomeToast: "Welcome Faculty Dr. Vikram Seth",
+        sidebarLabel: "Faculty CS Workspace",
+        topSubline: "FACULTY PORTAL: COMPILER & CLOUD DIV",
+        dashHeading: "Department of Computer Science & Engineering",
+        dashSubHeading: "Academic Term 2026 • HoD Workspace Dr. Vikram Seth • Mentorship & Syllabus Telemetry",
+        bannerRoleIcon: "🔬",
+        bannerTitle: "Department of Computer Science & Engineering (HoD Cell)",
+        bannerSub: "Head of Dept: <span class='text-cyan-300 font-semibold'>Dr. Vikram Seth, Ph.D.</span> • Tech Block 304",
+        studentsTabTitle: "CSE Department Scholar Cohort & Mentee Roster",
+        feeAuditor: "Faculty Verified: Dr. Vikram Seth (HoD CSE)",
+        receiptDeanSign: "DEPARTMENT OF COMPUTER SCIENCE • FACULTY CO-SIGN",
+        receiptAuthFooter: "Faculty Endorsed: Dr. Vikram Seth (HoD CS)",
+        copilotTitle: "Faculty Curriculum & Mentee Co-Pilot",
+        copilotSubtitle: "Curriculum Velocity & Mentee Tracker for Dr. Vikram Seth",
+        copilotBtnText: "Dispatch Mentee CIA Remedial Schedule",
+        copilotInsights: [
+          {
+            icon: "book-open",
+            color: "cyan",
+            title: "CSE Syllabus Velocity",
+            desc: "Compiler Design (CS-401) is 86% completed. Cloud Computing Laboratory is currently ahead of midterm benchmark schedule."
+          },
+          {
+            icon: "alert-circle",
+            color: "amber",
+            title: "Mentee Arrear Alert: Bharathraj",
+            desc: "Bharathraj has 2 backlogs with 68% attendance in Data Structures (CS-302). Special Saturday remedial tutorials advised."
+          },
+          {
+            icon: "star",
+            color: "emerald",
+            title: "Top Performer: Santhosh Kumar",
+            desc: "Santhosh Kumar scored 48/50 in CIA-1 and completed Zoho Corporation Day-1 onboarding preparation."
+          }
+        ]
+      },
+      student: {
+        roleKey: 'student',
+        userName: "Santhosh Kumar",
+        userRole: "Student Scholar • B.Tech CSE (Year 3)",
+        shortInitials: "SK",
+        loginEmail: "santhosh.kumar@college.edu",
+        loginSubtitle: "Student Self-Service Portal • Santhosh Kumar (STU-2026-001)",
+        loginQuickText: "⚡ One-Click Access (Scholar: Santhosh Kumar)",
+        welcomeVoice: "Access granted. Welcome Scholar Santhosh Kumar to your Student Academic Dashboard.",
+        welcomeToast: "Welcome Scholar Santhosh Kumar",
+        sidebarLabel: "Scholar Workspace",
+        topSubline: "SCHOLAR ID: STU-2026-001 • ACTIVE",
+        dashHeading: "Scholar Academic & Term Progress Hub",
+        dashSubHeading: "Welcome Santhosh Kumar • STU-2026-001 • B.Tech CSE • Term VI",
+        bannerRoleIcon: "🎓",
+        bannerTitle: "Autonomous Scholar Student Profile Portal",
+        bannerSub: "Scholar: <span class='text-cyan-300 font-semibold'>Santhosh Kumar</span> • Hosteller (Block A, Room 402) • Merit Quota",
+        studentsTabTitle: "My Student Profile & Peer Cohort",
+        feeAuditor: "Verified Clear: Student Treasury Account",
+        receiptDeanSign: "OFFICE OF ACADEMIC AFFAIRS • STUDENT FEE VOUCHER",
+        receiptAuthFooter: "Issued to Scholar: Santhosh Kumar",
+        copilotTitle: "Scholar AI Academic Mentor",
+        copilotSubtitle: "Personalized Career & Exam Assistant for Santhosh Kumar",
+        copilotBtnText: "Confirm End-Semester Hall Ticket & Placement Drive",
+        copilotInsights: [
+          {
+            icon: "trophy",
+            color: "emerald",
+            title: "Outstanding CGPA: 9.1 / 10",
+            desc: "Your academic standing places you in the top 3% of the Computer Science department. Zero standing backlogs."
+          },
+          {
+            icon: "check-circle",
+            color: "cyan",
+            title: "Fee Status: 100% Cleared (₹0 Due)",
+            desc: "Your full term fee of ₹85,000 is settled (Receipt: TXN-99812). Hall ticket generation is fully unrestricted."
+          },
+          {
+            icon: "briefcase",
+            color: "amber",
+            title: "Corporate Offer: Zoho Corporation",
+            desc: "Placement offer accepted for ₹12.00 LPA. Mandatory documentation must be submitted to the Career Cell before next week."
+          }
+        ]
+      }
+    };
+
+    function selectLoginRole(role) {
+      playSciFiTone(500, 'sine', 0.05);
+      selectedRole = role;
+      ['admin', 'faculty', 'student'].forEach(r => {
+        const btn = document.getElementById(`role-${r}`);
+        if (r === role) {
+          btn.className = "py-2 rounded-lg bg-blue-600 text-white transition shadow flex items-center justify-center gap-1";
+        } else {
+          btn.className = "py-2 rounded-lg text-slate-400 hover:text-white transition flex items-center justify-center gap-1";
+        }
+      });
+
+      const config = ROLE_CONFIGS[role];
+      const emailInput = document.getElementById('login-email');
+      emailInput.value = config.loginEmail;
+      document.getElementById('login-subtitle').innerText = config.loginSubtitle;
+      document.getElementById('quick-login-label').innerText = config.loginQuickText;
+
+      const avatar = document.getElementById('login-badge-avatar');
+      if (role === 'admin') avatar.innerText = "⚡";
+      else if (role === 'faculty') avatar.innerText = "👨‍🏫";
+      else avatar.innerText = "🎓";
+
+      scrambleText(document.getElementById('login-title-scramble'), "CAMPUS ERP");
+    }
+
+    function getDisplayStudents() {
+      if (selectedRole === 'student') {
+        // Scholar sees their own record first and foremost
+        return studentsData.filter(s => s.id === "STU-2026-001");
+      } else if (selectedRole === 'faculty') {
+        // Faculty (Dr. Vikram Seth - CS HoD) sees CS department students
+        return studentsData.filter(s => s.dept === "Computer Science");
+      }
+      // Dean Admin sees all institution records
+      return studentsData;
+    }
+
+    function applyRoleCustomizations() {
+      const config = ROLE_CONFIGS[selectedRole];
+
+      // Sidebar & Header Profile Updates
+      document.getElementById('sidebar-role-label').innerText = config.sidebarLabel;
+      document.getElementById('user-display-name').innerText = config.userName;
+      document.getElementById('user-display-role').innerText = config.userRole;
+      document.getElementById('user-avatar-badge').innerText = config.shortInitials;
+      document.getElementById('top-role-subline').innerText = config.topSubline;
+
+      // Dashboard Headings & Institutional Banner
+      document.getElementById('dash-heading-scramble').innerText = config.dashHeading;
+      document.getElementById('dash-subheading').innerText = config.dashSubHeading;
+      document.getElementById('banner-role-icon').innerText = config.bannerRoleIcon;
+      document.getElementById('banner-portal-title').innerText = config.bannerTitle;
+      document.getElementById('banner-portal-sub').innerHTML = config.bannerSub;
+      document.getElementById('students-tab-title').innerText = config.studentsTabTitle;
+
+      // Action buttons depending on role
+      const topActionText = document.getElementById('top-action-text');
+      const addStudentBtn = document.getElementById('top-enroll-btn');
+      const tableAddStudentBtn = document.getElementById('add-student-btn-table');
+      const collectFeeBtn = document.getElementById('collect-fee-btn');
+
+      if (selectedRole === 'student') {
+        topActionText.innerText = "My Hall Ticket";
+        addStudentBtn.onclick = () => {
+          const myRec = studentsData.find(s => s.id === "STU-2026-001") || studentsData[0];
+          openHallTicketModal(myRec);
+        };
+        if (tableAddStudentBtn) tableAddStudentBtn.classList.add('hidden');
+        if (collectFeeBtn) collectFeeBtn.innerHTML = '<i data-lucide="receipt" class="w-3.5 h-3.5"></i> Pay Term Fee Online';
+      } else if (selectedRole === 'faculty') {
+        topActionText.innerText = "Grade CIA Marks";
+        addStudentBtn.onclick = () => switchTab('exams');
+        if (tableAddStudentBtn) tableAddStudentBtn.classList.remove('hidden');
+        if (collectFeeBtn) collectFeeBtn.innerHTML = '<i data-lucide="receipt" class="w-3.5 h-3.5"></i> Department Ledger';
+      } else {
+        topActionText.innerText = "Enroll Student";
+        addStudentBtn.onclick = () => openModal('add-student-modal');
+        if (tableAddStudentBtn) tableAddStudentBtn.classList.remove('hidden');
+        if (collectFeeBtn) collectFeeBtn.innerHTML = '<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Collect / Settle Student Fee';
+      }
+
+      // Copilot customizations
+      document.getElementById('ai-copilot-title').innerText = config.copilotTitle;
+      document.getElementById('ai-copilot-subtitle').innerText = config.copilotSubtitle;
+      document.getElementById('ai-advisory-btn-text').innerText = config.copilotBtnText;
+
+      const insightsContainer = document.getElementById('ai-copilot-insights');
+      insightsContainer.innerHTML = '';
+      config.copilotInsights.forEach(item => {
+        const box = document.createElement('div');
+        box.className = `p-3.5 rounded-xl bg-slate-900/90 border border-${item.color}-500/30`;
+        box.innerHTML = `
+          <div class="flex items-center gap-2 text-${item.color}-300 font-bold mb-1">
+            <i data-lucide="${item.icon}" class="w-4 h-4 text-${item.color}-400"></i> ${item.title}
+          </div>
+          <p class="text-slate-300 text-[11px] font-sans">${item.desc}</p>
+        `;
+        insightsContainer.appendChild(box);
+      });
+
+      // Role specific KPI updates
+      const kpi1Label = document.getElementById('kpi-label-1');
+      const kpi1Sub = document.getElementById('kpi-sub-1');
+      const kpi2Label = document.getElementById('kpi-label-2');
+      const kpi4Label = document.getElementById('kpi-label-4');
+      const kpi4Val = document.getElementById('kpi-val-4');
+      const kpi4Sub = document.getElementById('kpi-sub-4');
+
+      if (selectedRole === 'student') {
+        const myData = studentsData.find(s => s.id === "STU-2026-001");
+        kpi1Label.innerText = "My Earned Credits";
+        document.getElementById('stat-students-count').innerText = `${myData.credits} / 160`;
+        kpi1Sub.innerText = "Semester VI Standing";
+        
+        kpi2Label.innerText = "My Fee Dues";
+        document.getElementById('stat-total-fees').innerText = "₹0.00";
+        document.getElementById('stat-fees-collected').innerText = "Paid: ₹85,000";
+        document.getElementById('stat-fees-due').innerText = "Status: 100% Cleared";
+
+        kpi4Label.innerText = "My Placement Offer";
+        kpi4Val.innerText = "₹12.0 LPA";
+        kpi4Sub.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i> Zoho Corporation Day-1';
+      } else if (selectedRole === 'faculty') {
+        const csStudents = studentsData.filter(s => s.dept === "Computer Science");
+        kpi1Label.innerText = "CSE Scholars Mentored";
+        document.getElementById('stat-students-count').innerText = csStudents.length;
+        kpi1Sub.innerText = "2 Active CSE Cohorts";
+
+        kpi2Label.innerText = "CSE Dept Fee Realized";
+        kpi4Label.innerText = "CSE Conversion Rate";
+        kpi4Val.innerText = "96.5%";
+        kpi4Sub.innerHTML = '<i data-lucide="award" class="w-3.5 h-3.5"></i> 2 Tier-1 Dream Offers';
+      } else {
+        kpi1Label.innerText = "Scholars Registered";
+        kpi1Sub.innerText = "5 Master Cohorts";
+        kpi2Label.innerText = "Total Term Dues";
+        kpi4Label.innerText = "Placement Conversions";
+        kpi4Val.innerText = "92.4%";
+        kpi4Sub.innerHTML = '<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Highest CTC: ₹44.5 LPA';
+      }
+
+      // Render scoped tables
+      renderStudents(getDisplayStudents());
+      renderFeesMaster(getDisplayStudents());
+      renderExamRoster();
+      lucide.createIcons();
+    }
+
+    function updateCounts() {
+      if (selectedRole === 'student') {
+        // Individualized values
+        const myData = studentsData.find(s => s.id === "STU-2026-001") || studentsData[0];
+        document.getElementById('stat-students-count').innerText = `${myData.credits} / 160`;
+        document.getElementById('nav-students-count').innerText = "1";
+        document.getElementById('nav-fees-alert').innerText = "0 Due";
+        document.getElementById('stat-avg-attendance').innerText = myData.attendance;
+        return;
+      }
+
+      const dataset = getDisplayStudents();
+      const elCount = document.getElementById('stat-students-count');
+      const navBadge = document.getElementById('nav-students-count');
+      if (elCount) elCount.innerText = dataset.length;
+      if (navBadge) navBadge.innerText = dataset.length;
+
+      let totalAssessed = 0;
+      let totalPaid = 0;
+      let totalDue = 0;
+      let countPaid = 0, countPartial = 0, countDue = 0;
+
+      dataset.forEach(s => {
+        totalAssessed += (s.totalFee || 0);
+        totalPaid += (s.paidFee || 0);
+        totalDue += (s.pendingFee || 0);
+        if (s.feeStatus === 'PAID') countPaid++;
+        else if (s.feeStatus === 'PARTIAL') countPartial++;
+        else countDue++;
+      });
+
+      const statTotalFees = document.getElementById('stat-total-fees');
+      const statFeesCollected = document.getElementById('stat-fees-collected');
+      const statFeesDue = document.getElementById('stat-fees-due');
+      const ledgerTotalAssessment = document.getElementById('ledger-total-assessment');
+      const ledgerTotalPaid = document.getElementById('ledger-total-paid');
+      const ledgerTotalDue = document.getElementById('ledger-total-due');
+      const ledgerCollectionPercent = document.getElementById('ledger-collection-percent');
+
+      const formatINR = (n) => '₹' + n.toLocaleString('en-IN');
+
+      if (statTotalFees) statTotalFees.innerText = formatINR(totalAssessed);
+      if (statFeesCollected) statFeesCollected.innerText = `Collected: ${formatINR(totalPaid)}`;
+      if (statFeesDue) statFeesDue.innerText = `Pending: ${formatINR(totalDue)}`;
+
+      if (ledgerTotalAssessment) ledgerTotalAssessment.innerText = formatINR(totalAssessed);
+      if (ledgerTotalPaid) ledgerTotalPaid.innerText = formatINR(totalPaid);
+      if (ledgerTotalDue) ledgerTotalDue.innerText = formatINR(totalDue);
+      if (ledgerCollectionPercent) {
+        const pct = totalAssessed > 0 ? ((totalPaid / totalAssessed) * 100).toFixed(1) : 0;
+        ledgerCollectionPercent.innerText = `${pct}% Realized to Treasury`;
+      }
+
+      document.getElementById('dash-paid-count').innerText = `${countPaid} Scholars`;
+      document.getElementById('dash-partial-count').innerText = `${countPartial} Scholars`;
+      document.getElementById('dash-due-count').innerText = `${countDue} Scholars`;
+      document.getElementById('nav-fees-alert').innerText = `${countPartial + countDue} Due`;
+
+      if (dataset.length > 0) {
+        const avg = (dataset.reduce((acc, s) => acc + s.attendance, 0) / dataset.length).toFixed(1);
+        const avgEl = document.getElementById('stat-avg-attendance');
+        if (avgEl) avgEl.innerText = avg;
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      loginUser();
+    }
+
+    function quickDemoLogin() {
+      loginUser();
+    }
+
+    function loginUser() {
+      playSuccessChime();
+      document.getElementById('login-section').classList.add('opacity-0');
+      setTimeout(() => {
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('erp-workspace').classList.remove('hidden');
+        
+        const config = ROLE_CONFIGS[selectedRole];
+        applyRoleCustomizations();
+
+        triggerToast(config.welcomeToast, 'success');
+        speakVoice(config.welcomeVoice);
+        
+        scrambleText(document.getElementById('dash-heading-scramble'), config.dashHeading);
+        animateCounters();
+        updateCounts();
+        initTiltCards();
+        lucide.createIcons();
+      }, 300);
+    }
+
+    function handleLogout() {
+      playSciFiTone(320, 'sine', 0.1);
+      document.getElementById('erp-workspace').classList.add('hidden');
+      const login = document.getElementById('login-section');
+      login.classList.remove('hidden');
+      setTimeout(() => login.classList.remove('opacity-0'), 20);
+      triggerToast('Signed out successfully', 'info');
+      speakVoice("Workspace session terminated.");
+    }
+
+    function exportStudentsToCSV() {
+      playSciFiTone(850, 'sine', 0.1);
+      const dataToExport = getDisplayStudents();
+      let csv = "Student ID,Student Name,Department,Academic Year,Fee Status,Total Fee (INR),Paid Amount (INR),Pending Due (INR),Attendance (%),CGPA,Backlogs,Residence,Parent Contact\n";
+      dataToExport.forEach(s => {
+        csv += `"${s.id}","${s.name}","${s.dept}","${s.year}","${s.feeStatus}","${s.totalFee}","${s.paidFee}","${s.pendingFee}","${s.attendance}%","${s.gpa}","${s.backlogs}","${s.residence}","${s.parentContact}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Campus_${selectedRole.toUpperCase()}_Roster_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      triggerToast("Detailed CSV Spreadsheet generated with Fee Ledger!", "success");
+      speakVoice("Student roster CSV export finalized.");
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const clockEl = document.getElementById('digital-clock');
+      if (clockEl) clockEl.innerText = now.toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    let isCollapsed = false;
+    document.getElementById('toggle-sidebar').addEventListener('click', () => {
+      playSciFiTone(450, 'sine', 0.04);
+      isCollapsed = !isCollapsed;
+      const sidebar = document.getElementById('sidebar');
+      const textElements = document.querySelectorAll('.sidebar-text');
+      if (isCollapsed) {
+        sidebar.classList.remove('w-64');
+        sidebar.classList.add('w-20');
+        textElements.forEach(el => el.classList.add('hidden'));
+      } else {
+        sidebar.classList.remove('w-20');
+        sidebar.classList.add('w-64');
+        textElements.forEach(el => el.classList.remove('hidden'));
+      }
+    });
+
+    function toggleTheme() {
+      playSciFiTone(600, 'triangle', 0.08);
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        html.classList.add('light');
+        document.body.classList.remove('bg-[#020617]', 'text-slate-100');
+        document.body.classList.add('bg-[#f8fafc]', 'text-slate-800');
+        icon.setAttribute('data-lucide', 'moon');
+      } else {
+        html.classList.remove('light');
+        html.classList.add('dark');
+        document.body.classList.remove('bg-[#f8fafc]', 'text-slate-800');
+        document.body.classList.add('bg-[#020617]', 'text-slate-100');
+        icon.setAttribute('data-lucide', 'sun');
+      }
+      lucide.createIcons();
+    }
+
+    function toggleNotifications() {
+      playSciFiTone(520, 'sine', 0.05);
+      document.getElementById('notification-drawer').classList.toggle('translate-x-full');
+      lucide.createIcons();
+    }
+
+    function toggleCommandPalette() {
+      const p = document.getElementById('cmd-palette');
+      p.classList.toggle('hidden');
+      if (!p.classList.contains('hidden')) {
+        playSciFiTone(650, 'sine', 0.06);
+        setTimeout(() => document.getElementById('cmd-input').focus(), 50);
+      }
+      lucide.createIcons();
+    }
+
+    function handlePaletteBackdrop(e) {
+      if (e.target.id === 'cmd-palette') toggleCommandPalette();
+    }
+
+    function executeCommand(action) {
+      toggleCommandPalette();
+      if (action === 'students') switchTab('students');
+      if (action === 'fees') switchTab('fees');
+      if (action === 'placements') switchTab('placements');
+      if (action === 'library') switchTab('library');
+      if (action === 'research') switchTab('research');
+      if (action === 'circulars') switchTab('circulars');
+      if (action === 'hostel') switchTab('hostel');
+      if (action === 'attendance') switchTab('attendance');
+      if (action === 'exams') switchTab('exams');
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleCommandPalette();
+      }
+      if (e.key === 'Escape') {
+        const p = document.getElementById('cmd-palette');
+        if (!p.classList.contains('hidden')) p.classList.add('hidden');
+      }
+    });
+
+    function triggerToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-950/95 text-white border border-cyan-500/40 shadow-2xl backdrop-blur-xl text-xs pointer-events-auto transform transition-all duration-300 translate-y-2 opacity-0 font-mono';
+      const iconName = type === 'success' ? 'check-circle' : 'info';
+      toast.innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4 text-cyan-400"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 20);
+      setTimeout(() => {
+        toast.classList.add('opacity-0', '-translate-y-2');
+        setTimeout(() => toast.remove(), 3200);
+      }, 3400);
+    }
+
+    function animateCounters() {
+      document.querySelectorAll('.counter').forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        let count = 0;
+        const speed = target / 35;
+        const update = () => {
+          count += speed;
+          if (count < target) {
+            counter.innerText = Math.ceil(count);
+            requestAnimationFrame(update);
+          } else {
+            counter.innerText = target;
+          }
+        };
+        update();
+      });
+    }
+
+    function switchTab(tabId) {
+      playSciFiTone(480, 'sine', 0.04);
+      ['dashboard', 'students', 'fees', 'placements', 'library', 'research', 'circulars', 'faculty', 'attendance', 'hostel', 'timetable', 'exams'].forEach(t => {
+        const el = document.getElementById(`tab-${t}`);
+        if (el) el.classList.add('hidden');
+      });
+
+      const targetEl = document.getElementById(`tab-${tabId}`);
+      if (targetEl) targetEl.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabId) {
+          btn.className = "nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition group bg-blue-600/20 text-cyan-300 border border-blue-500/30";
+        } else {
+          btn.className = "nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition group";
+        }
+      });
+
+      if (tabId === 'dashboard') {
+        animateCounters();
+        scrambleText(document.getElementById('dash-heading-scramble'), ROLE_CONFIGS[selectedRole].dashHeading);
+      }
+      initTiltCards();
+      lucide.createIcons();
+    }
+
+    // ---------------- Render Students Master Table ----------------
+    function renderStudents(filtered = getDisplayStudents()) {
+      const tbody = document.getElementById('students-table-body');
+      tbody.innerHTML = '';
+
+      filtered.forEach((stu, index) => {
+        let feeBadge = 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+        if (stu.feeStatus === 'PAID') feeBadge = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+        else if (stu.feeStatus === 'PARTIAL') feeBadge = 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+
+        const row = document.createElement('tr');
+        row.className = "hover:bg-cyan-500/10 transition cursor-pointer group";
+        row.innerHTML = `
+          <td class="py-3 px-4 font-medium flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shrink-0 shadow-sm shadow-cyan-500/30">
+              ${stu.name[0]}
+            </div>
+            <div>
+              <div class="font-bold text-white group-hover:text-cyan-300 transition">${stu.name}</div>
+              <div class="text-[10px] text-cyan-400 font-mono">${stu.id}</div>
+              <div class="text-[9px] text-slate-500 font-mono">Parent: ${stu.parentContact || 'N/A'}</div>
+            </div>
+          </td>
+          <td class="py-3 px-4">
+            <div class="text-slate-200 font-semibold">${stu.dept}</div>
+            <div class="text-[10px] text-slate-400 font-mono">${stu.year} • ${stu.credits || 0} Credits</div>
+          </td>
+          <td class="py-3 px-4 font-mono">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${feeBadge}">${stu.feeStatus}</span>
+            <div class="text-[10px] text-slate-400 mt-1">
+              Paid: <strong class="text-emerald-400">₹${(stu.paidFee || 0).toLocaleString('en-IN')}</strong>
+            </div>
+            ${stu.pendingFee > 0 ? `<div class="text-[10px] text-rose-400 font-bold">Due: ₹${stu.pendingFee.toLocaleString('en-IN')}</div>` : ''}
+          </td>
+          <td class="py-3 px-4">
+            <div class="flex items-center gap-2">
+              <div class="w-16 h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                <div class="h-full bg-cyan-400 rounded-full" style="width: ${stu.attendance}%"></div>
+              </div>
+              <span class="font-bold text-white font-mono">${stu.attendance}%</span>
+            </div>
+            <div class="text-[9px] text-slate-400 font-mono mt-0.5">Theory: ${stu.attTheory || stu.attendance}% | Lab: ${stu.attLab || stu.attendance}%</div>
+          </td>
+          <td class="py-3 px-4 font-mono">
+            <div class="font-black text-white text-sm">${stu.gpa} / 10</div>
+            <div class="text-[10px] ${stu.backlogs > 0 ? 'text-rose-400 font-bold' : 'text-emerald-400'}">
+              ${stu.backlogs > 0 ? `${stu.backlogs} Backlog(s)` : '0 Arrears (Clear)'}
+            </div>
+          </td>
+          <td class="py-3 px-4 text-slate-300 font-mono text-[11px]">
+            <div>${stu.residence || 'Day Scholar'}</div>
+            <span class="text-[9px] text-slate-500 font-sans px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800">${stu.quota || 'General'}</span>
+          </td>
+          <td class="py-3 px-4 text-right">
+            <div class="flex items-center justify-end gap-1.5">
+              <button onclick='viewStudentDetails(${JSON.stringify(stu)})' class="px-2.5 py-1 rounded-lg glass-card hover:bg-slate-700 text-cyan-300 transition text-[11px] font-medium flex items-center gap-1" title="Cyber ID">
+                <i data-lucide="badge-check" class="w-3.5 h-3.5 text-cyan-400"></i> Cyber ID
+              </button>
+              <button onclick='viewFeeReceipt(${JSON.stringify(stu)})' class="px-2 py-1 rounded-lg glass-card hover:bg-emerald-900/40 text-emerald-300 transition text-[11px]" title="View Invoice">
+                <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
+              </button>
+              ${selectedRole !== 'student' ? `
+                <button onclick='deleteStudent(${index})' class="p-1 rounded-lg hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 transition" title="Delete">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              ` : ''}
+            </div>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+      document.getElementById('students-count-badge').innerText = `Showing ${filtered.length} of ${studentsData.length} records`;
+      updateCounts();
+      lucide.createIcons();
+    }
+
+    // ---------------- Render Fees Master Table ----------------
+    function renderFeesMaster(data = getDisplayStudents()) {
+      const tbody = document.getElementById('fees-master-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      data.forEach(stu => {
+        let statusBadge = 'bg-rose-500/10 text-rose-400 border border-rose-500/30';
+        if (stu.feeStatus === 'PAID') statusBadge = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30';
+        else if (stu.feeStatus === 'PARTIAL') statusBadge = 'bg-amber-500/10 text-amber-400 border border-amber-500/30';
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-900/60 transition";
+        tr.innerHTML = `
+          <td class="py-3 px-4">
+            <span class="font-bold text-white font-sans">${stu.name}</span>
+            <div class="text-[10px] text-slate-400">${stu.id} • ${stu.dept}</div>
+          </td>
+          <td class="py-3 px-4 text-white font-bold">₹${(stu.totalFee || 85000).toLocaleString('en-IN')}</td>
+          <td class="py-3 px-4 text-emerald-400 font-bold">₹${(stu.paidFee || 0).toLocaleString('en-IN')}</td>
+          <td class="py-3 px-4 text-rose-400 font-bold">₹${(stu.pendingFee || 0).toLocaleString('en-IN')}</td>
+          <td class="py-3 px-4">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${statusBadge}">${stu.feeStatus}</span>
+          </td>
+          <td class="py-3 px-4 text-cyan-300 font-bold">${stu.lastTxn || 'TXN-99812'}</td>
+          <td class="py-3 px-4 text-right">
+            <button onclick='viewFeeReceipt(${JSON.stringify(stu)})' class="px-3 py-1 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold text-[10px] shadow hover:brightness-110 flex items-center gap-1.5 ml-auto">
+              <i data-lucide="receipt" class="w-3 h-3"></i> Receipt
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    // ---------------- Render Exam Scorecard Roster with Hall Tickets ----------------
+    function renderExamRoster() {
+      const tbody = document.getElementById('exam-roster-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const targetData = getDisplayStudents();
+
+      targetData.forEach(stu => {
+        const eligible = stu.attendance >= 75 && stu.pendingFee === 0;
+        const hallBadge = eligible 
+          ? '<span class="text-emerald-400 font-bold">ISSUED (CLEARED)</span>' 
+          : '<span class="text-rose-400 font-bold">BARRED (DUES / ATTENDANCE)</span>';
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-900/60 transition";
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-bold text-white font-sans">${stu.name} (${stu.id})</td>
+          <td class="py-3 px-4 text-cyan-300">${stu.cia1 || 42} / 50</td>
+          <td class="py-3 px-4 text-cyan-300">${stu.cia2 || 44} / 50</td>
+          <td class="py-3 px-4 text-white">${stu.credits || 112} Credits</td>
+          <td class="py-3 px-4 text-emerald-400 font-bold">${stu.gpa} CGPA</td>
+          <td class="py-3 px-4 text-[11px]">${hallBadge}</td>
+          <td class="py-3 px-4 text-right">
+            ${eligible ? `
+              <button onclick='openHallTicketModal(${JSON.stringify(stu)})' class="px-2.5 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/40 text-[10px] font-bold">
+                View Hall Ticket
+              </button>
+            ` : `
+              <span class="text-rose-400 text-[10px] font-mono">Barred by Syndicate</span>
+            `}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openHallTicketModal(stu) {
+      playSuccessChime();
+      document.getElementById('ht-name').innerText = stu.name;
+      document.getElementById('ht-id').innerText = stu.id;
+      document.getElementById('ht-dept').innerText = stu.dept;
+      openModal('hall-ticket-modal');
+    }
+
+    function deleteStudent(index) {
+      playSciFiTone(280, 'sawtooth', 0.12);
+      if (confirm(`Remove ${studentsData[index].name} from institutional register?`)) {
+        studentsData.splice(index, 1);
+        saveStudents();
+        renderStudents(getDisplayStudents());
+        renderFeesMaster(getDisplayStudents());
+        renderExamRoster();
+        populateStudentSelects();
+        triggerToast("Student record removed from registry", "info");
+      }
+    }
+
+    function filterStudents() {
+      playSciFiTone(550, 'sine', 0.03);
+      const deptVal = document.getElementById('dept-filter').value;
+      const feeVal = document.getElementById('fee-status-filter').value;
+
+      let filtered = getDisplayStudents();
+      if (deptVal !== 'All') filtered = filtered.filter(s => s.dept === deptVal);
+      if (feeVal !== 'All') filtered = filtered.filter(s => s.feeStatus === feeVal);
+
+      renderStudents(filtered);
+    }
+
+    function handleGlobalSearch(term) {
+      const q = term.toLowerCase().trim();
+      const base = getDisplayStudents();
+      if (!q) {
+        renderStudents(base);
+        return;
+      }
+      switchTab('students');
+      const filtered = base.filter(s => 
+        s.name.toLowerCase().includes(q) || 
+        s.id.toLowerCase().includes(q) || 
+        s.dept.toLowerCase().includes(q) ||
+        s.feeStatus.toLowerCase().includes(q)
+      );
+      renderStudents(filtered);
+    }
+
+    function openModal(id) {
+      playSciFiTone(600, 'sine', 0.05);
+      document.getElementById(id).classList.remove('hidden');
+      initTiltCards();
+      lucide.createIcons();
+    }
+    function closeModal(id) {
+      playSciFiTone(400, 'sine', 0.05);
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function viewStudentDetails(stu) {
+      playSuccessChime();
+      document.getElementById('modal-stu-name').innerText = stu.name;
+      document.getElementById('modal-stu-id').innerText = stu.id;
+      document.getElementById('modal-stu-dept').innerText = stu.dept;
+      document.getElementById('modal-stu-att').innerText = `${stu.attendance}% (Lab: ${stu.attLab || stu.attendance}%)`;
+      document.getElementById('modal-stu-gpa').innerText = `${stu.gpa} / 10.0`;
+      document.getElementById('modal-stu-avatar').innerText = stu.name[0];
+      
+      const badge = document.getElementById('modal-stu-fee-badge');
+      badge.innerText = `${stu.feeStatus} (Due: ₹${(stu.pendingFee || 0).toLocaleString('en-IN')})`;
+      badge.className = stu.feeStatus === 'PAID' ? 'font-bold text-emerald-400 mt-0.5' : 'font-bold text-rose-400 mt-0.5';
+
+      document.getElementById('modal-stu-residence').innerText = stu.residence || 'Day Scholar';
+      document.getElementById('modal-stu-backlogs').innerText = `${stu.backlogs || 0} Standing Backlogs`;
+      document.getElementById('modal-stu-parent').innerText = stu.parentContact || '+91 94441 23456';
+
+      openModal('view-student-modal');
+      speakVoice(`Holographic identification verified for ${stu.name}.`);
+    }
+
+    function viewFeeReceipt(stu) {
+      playSuccessChime();
+      document.getElementById('rec-student-name').innerText = stu.name;
+      document.getElementById('rec-student-id').innerText = stu.id + ' • ' + stu.dept;
+      document.getElementById('rec-txn-num').innerText = stu.lastTxn || 'TXN-' + Math.floor(10000 + Math.random() * 90000);
+      document.getElementById('rec-date').innerText = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
+
+      const bk = stu.feeBreakdown || { tuition: 45000, lab: 15000, hostel: 20000, exam: 5000 };
+      document.getElementById('rec-tuition').innerText = '₹' + (bk.tuition || 45000).toLocaleString('en-IN') + '.00';
+      document.getElementById('rec-lab').innerText = '₹' + (bk.lab || 15000).toLocaleString('en-IN') + '.00';
+      document.getElementById('rec-hostel').innerText = '₹' + (bk.hostel || 20000).toLocaleString('en-IN') + '.00';
+      document.getElementById('rec-exam').innerText = '₹' + (bk.exam || 5000).toLocaleString('en-IN') + '.00';
+
+      document.getElementById('rec-total-paid').innerText = '₹' + (stu.paidFee || 0).toLocaleString('en-IN') + '.00';
+      document.getElementById('rec-pending-amount').innerText = '₹' + (stu.pendingFee || 0).toLocaleString('en-IN') + '.00';
+
+      openModal('receipt-modal');
+      speakVoice(`Official financial receipt displayed for ${stu.name}.`);
+    }
+
+    function populateStudentSelects() {
+      const select = document.getElementById('pay-student-select');
+      if (!select) return;
+      select.innerHTML = '';
+      const pool = getDisplayStudents();
+      pool.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.innerText = `${s.name} (${s.id}) - Due: ₹${(s.pendingFee || 0).toLocaleString('en-IN')}`;
+        select.appendChild(opt);
+      });
+    }
+
+    function handleFeePaymentSubmit(e) {
+      e.preventDefault();
+      playSuccessChime();
+      const stuId = document.getElementById('pay-student-select').value;
+      const amount = parseFloat(document.getElementById('pay-amount').value) || 0;
+      const mode = document.getElementById('pay-mode').value;
+      const head = document.getElementById('pay-head').value;
+
+      const stu = studentsData.find(s => s.id === stuId);
+      if (!stu) return;
+
+      stu.paidFee = (stu.paidFee || 0) + amount;
+      stu.pendingFee = Math.max(0, (stu.totalFee || 85000) - stu.paidFee);
+      stu.feeStatus = stu.pendingFee === 0 ? 'PAID' : 'PARTIAL';
+      stu.lastTxn = 'TXN-' + Math.floor(10000 + Math.random() * 90000);
+
+      const ledgerBox = document.getElementById('ledger-entries');
+      const item = document.createElement('div');
+      item.className = "flex justify-between items-center p-3 rounded-xl bg-slate-900/80 border border-emerald-500/40 text-xs font-mono animate-pulse";
+      item.innerHTML = `
+        <div class="flex items-center gap-3">
+          <span class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400"><i data-lucide="check" class="w-4 h-4"></i></span>
+          <div>
+            <p class="text-white font-bold font-sans">${stu.name} (${stu.id})</p>
+            <p class="text-slate-400 text-[10px]">${head} • ${mode} • Ref: ${stu.lastTxn}</p>
+          </div>
+        </div>
+        <span class="text-emerald-400 font-bold">+₹${amount.toLocaleString('en-IN')}.00</span>
+      `;
+      ledgerBox.insertBefore(item, ledgerBox.firstChild);
+
+      saveStudents();
+      renderStudents(getDisplayStudents());
+      renderFeesMaster(getDisplayStudents());
+      renderExamRoster();
+      closeModal('quick-pay-modal');
+      e.target.reset();
+
+      triggerToast(`Settled ₹${amount.toLocaleString('en-IN')} for ${stu.name}!`, 'success');
+      speakVoice(`Payment of ₹${amount} registered for ${stu.name}.`);
+    }
+
+    function handleCreateStudent(e) {
+      e.preventDefault();
+      playSuccessChime();
+      const totalF = parseFloat(document.getElementById('new-total-fee').value) || 85000;
+      const paidF = parseFloat(document.getElementById('new-paid-fee').value) || 0;
+      const pendingF = Math.max(0, totalF - paidF);
+      const feeSt = pendingF === 0 ? 'PAID' : (paidF > 0 ? 'PARTIAL' : 'PENDING');
+
+      const newStu = {
+        id: `STU-2026-00${studentsData.length + 1}`,
+        name: document.getElementById('new-name').value,
+        dept: document.getElementById('new-dept').value,
+        year: document.getElementById('new-year').value,
+        quota: document.getElementById('new-quota').value,
+        residence: document.getElementById('new-residence').value,
+        parentContact: document.getElementById('new-parent').value,
+        attendance: 100,
+        attTheory: 100,
+        attLab: 100,
+        gpa: parseFloat(document.getElementById('new-cgpa').value) || 8.8,
+        status: "Active",
+        feeStatus: feeSt,
+        totalFee: totalF,
+        paidFee: paidF,
+        pendingFee: pendingF,
+        feeBreakdown: { tuition: totalF * 0.55, lab: totalF * 0.2, hostel: totalF * 0.2, exam: totalF * 0.05 },
+        lastTxn: 'TXN-' + Math.floor(10000 + Math.random() * 90000),
+        backlogs: 0,
+        cia1: 45,
+        cia2: 45,
+        credits: 24
+      };
+
+      studentsData.unshift(newStu);
+      saveStudents();
+      renderStudents(getDisplayStudents());
+      renderFeesMaster(getDisplayStudents());
+      renderExamRoster();
+      populateStudentSelects();
+      closeModal('add-student-modal');
+      e.target.reset();
+
+      triggerToast(`Enrolled ${newStu.name} with ${newStu.feeStatus} Fee Status!`, 'success');
+      speakVoice(`Scholar ${newStu.name} successfully registered.`);
+      switchTab('students');
+    }
+
+    // ---------------- Real-Time Gate Scanner ----------------
+    function simulateRFIDScan() {
+      playSciFiTone(1050, 'sine', 0.12);
+      const randomStu = studentsData[Math.floor(Math.random() * studentsData.length)];
+      const logBox = document.getElementById('gate-logs');
+      const time = new Date().toLocaleTimeString();
+
+      const item = document.createElement('div');
+      item.className = "flex justify-between py-1.5 px-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 animate-pulse";
+      item.innerHTML = `
+        <span>${randomStu.name} (${randomStu.id})</span>
+        <span class="text-slate-400">${randomStu.dept} • Turnstile Gate 01 • ${time}</span>
+        <span class="font-bold text-emerald-400">ACCESS VERIFIED</span>
+      `;
+      logBox.insertBefore(item, logBox.firstChild);
+      triggerToast(`RFID Access Authorized: ${randomStu.name}`, 'success');
+      speakVoice(`Biometric pass authorized for ${randomStu.name}.`);
+    }
+
+    function renderFaculty() {
+      const grid = document.getElementById('faculty-grid');
+      grid.innerHTML = '';
+      facultyData.forEach(fac => {
+        const card = document.createElement('div');
+        card.className = "glass-card rounded-2xl p-5 hover:-translate-y-1 transition duration-200 relative";
+        card.setAttribute('data-tilt', '');
+        card.innerHTML = `
+          <div class="tilt-shine"></div>
+          <div class="flex items-center gap-3.5 mb-3">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-white font-bold text-base shadow-md shadow-purple-500/30">
+              ${fac.name[0]}
+            </div>
+            <div>
+              <div class="text-xs font-bold text-white">${fac.name}</div>
+              <div class="text-[10px] text-cyan-400 font-medium">${fac.role}</div>
+            </div>
+          </div>
+          <div class="text-xs text-slate-400 space-y-1.5 border-t border-blue-900/30 pt-3 font-mono">
+            <div class="flex justify-between"><span>Dept:</span> <strong class="text-slate-200 font-sans">${fac.dept}</strong></div>
+            <div class="flex justify-between"><span>Cabin:</span> <strong class="text-cyan-300 font-mono">${fac.cabin}</strong></div>
+            <div class="flex justify-between"><span>Subjects:</span> <strong class="text-slate-300 text-[10px]">${fac.subjects}</strong></div>
+            <div class="flex justify-between"><span>Papers:</span> <strong class="text-emerald-400">${fac.publications}</strong></div>
+            <div class="flex justify-between items-center pt-1 border-t border-slate-800">
+              <span class="text-[10px] text-slate-500 truncate">${fac.email}</span>
+              <span class="px-2 py-0.5 rounded-full text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${fac.status}</span>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function initSeedLedger() {
+      const ledgerBox = document.getElementById('ledger-entries');
+      if (!ledgerBox) return;
+      ledgerBox.innerHTML = `
+        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-900/60 border border-blue-900/30">
+          <div class="flex items-center gap-3">
+            <span class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400"><i data-lucide="check" class="w-4 h-4"></i></span>
+            <div>
+              <p class="text-white font-bold font-sans">Santhosh Kumar (STU-2026-001)</p>
+              <p class="text-slate-400 text-[10px]">Semester 6 Tuition & Lab Fee • TXN-99812 • Verified</p>
+            </div>
+          </div>
+          <span class="text-emerald-400 font-bold">+₹85,000.00</span>
+        </div>
+        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-900/60 border border-blue-900/30">
+          <div class="flex items-center gap-3">
+            <span class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400"><i data-lucide="check" class="w-4 h-4"></i></span>
+            <div>
+              <p class="text-white font-bold font-sans">Abijeeth (STU-2026-004)</p>
+              <p class="text-slate-400 text-[10px]">AI Lab & Cloud Retainer • TXN-99813 • Verified</p>
+            </div>
+          </div>
+          <span class="text-emerald-400 font-bold">+₹90,000.00</span>
+        </div>
+        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-900/60 border border-blue-900/30">
+          <div class="flex items-center gap-3">
+            <span class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400"><i data-lucide="check" class="w-4 h-4"></i></span>
+            <div>
+              <p class="text-white font-bold font-sans">Aswin (STU-2026-002)</p>
+              <p class="text-slate-400 text-[10px]">Final Year VLSI Project & Lab Fee • TXN-99814 • Verified</p>
+            </div>
+          </div>
+          <span class="text-emerald-400 font-bold">+₹82,000.00</span>
+        </div>
+      `;
+      
+      const gateLogs = document.getElementById('gate-logs');
+      if (gateLogs) {
+        gateLogs.innerHTML = `
+          <div class="flex justify-between py-1.5 px-3 rounded-lg bg-slate-900/60 border border-blue-900/30">
+            <span class="text-cyan-300">Santhosh Kumar (STU-2026-001)</span>
+            <span class="text-slate-400">Computer Science • Turnstile 01</span>
+            <span class="text-emerald-400 font-bold">GRANTED</span>
+          </div>
+          <div class="flex justify-between py-1.5 px-3 rounded-lg bg-slate-900/60 border border-blue-900/30">
+            <span class="text-cyan-300">Abijeeth (STU-2026-004)</span>
+            <span class="text-slate-400">AI Dept • Tech Park Turnstile</span>
+            <span class="text-emerald-400 font-bold">GRANTED</span>
+          </div>
+        `;
+      }
+    }
+
+    // ---------------- Chart Visualizations ----------------
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      renderStudents(getDisplayStudents());
+      renderFeesMaster(getDisplayStudents());
+      renderFaculty();
+      renderExamRoster();
+      populateStudentSelects();
+      initSeedLedger();
+      updateCounts();
+      initTiltCards();
+
+      // Attendance Bar Chart
+      const ctx = document.getElementById('performanceChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['CSE', 'AI & DS', 'ECE', 'MECH', 'CIVIL', 'BIO-TECH'],
+          datasets: [
+            {
+              label: 'Attendance Rate (%)',
+              data: [94, 98, 89, 76, 83, 91],
+              backgroundColor: 'rgba(56, 189, 248, 0.85)',
+              borderRadius: 8
+            },
+            {
+              label: 'Curriculum Velocity (%)',
+              data: [86, 94, 82, 70, 75, 85],
+              backgroundColor: 'rgba(139, 92, 246, 0.85)',
+              borderRadius: 8
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#94a3b8', font: { size: 11, family: 'Plus Jakarta Sans' } } }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono' } }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono' } }
+            }
+          }
+        }
+      });
+
+      // Fees Doughnut Chart
+      const donutCtx = document.getElementById('feesDistributionChart').getContext('2d');
+      new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Fully Paid', 'Partial Dues', 'Pending / Overdue'],
+          datasets: [{
+            data: [3, 1, 1],
+            backgroundColor: [
+              'rgba(16, 185, 129, 0.95)',
+              'rgba(245, 158, 11, 0.95)',
+              'rgba(244, 63, 94, 0.95)'
+            ],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { color: '#94a3b8', boxWidth: 10, font: { size: 10, family: 'JetBrains Mono' } } }
+          },
+          cutout: '72%'
+        }
+      });
+    });
+  </script>
+</body>
+</html>
